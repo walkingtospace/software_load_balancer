@@ -1,0 +1,46 @@
+% Our own preamble
+\usepackage{url}
+
+%\setlength{\parskip}{1pt plus 3pt minus 1pt}
+
+%Graphics
+%\usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{xcolor}
+\definecolor{HyperGreen}{HTML}{8DC684}
+\usepackage{tikz}
+\usepackage{tikzscale}
+\usetikzlibrary{shapes}
+\usepackage{pgfplots}
+
+%Macros
+\usepackage{cleveref}
+\usepackage{xspace}
+%\crefname{figure}{Fig.}{Fig.}
+\crefname{equation}{}{}
+\Crefname{equation}{Equation}{Equations}
+\crefname{algocf}{Alg.}{Algs.}
+\Crefname{algocf}{Algorithm}{Algorithms}
+
+%Math
+\usepackage{mathtools}
+\usepackage[locale=US,binary-units]{siunitx}
+\sisetup{group-separator = {,}}
+\usepackage{tabularx}
+
+%Algorithm
+\usepackage[boxed, linesnumbered]{algorithm2e}
+\renewcommand\AlCapFnt{\small} % Font size
+\renewcommand{\AlCapSty}{\small} % Font size
+
+\makeatletter
+\renewcommand{\maketag@@@}[1]{\hbox{\m@th\normalsize\normalfont#1}}%
+\makeatother
+
+%Appendix
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{color}
+
+\input{settings/macros}

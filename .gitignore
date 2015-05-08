@@ -1,0 +1,13 @@
+*.aux
+*.log
+*.out
+paper/*.pdf
+*.toc
+*.bak
+*.synctex.gz
+*.bbl
+*.blg
+*.class
+*.nav
+*.snm
+*-eps-converted-to.pdf
