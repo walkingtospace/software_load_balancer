@@ -7,5 +7,30 @@ function getSysInfo(){
 	var cpu = exec(cpuCmd).toString();
 	var mem = exec(memCmd).toString();
 	var json = '{"cpu":' + cpu +', "mem":' + mem + '}';
-	return JSON.parse(json);
+	return json;
 }
+
+var net = require('net');
+net.createServer(function(socket){
+    socket.write(getSysInfo());
+    socket.on('data', function(data){
+        socket.write(data.toString().toUpperCase())
+    });
+}).listen(40000);
+
+
+// Example way to connect to server and get sysinfo
+/*
+var net = require('net');
+var client = net.connect({port: 40000},
+    function() { //'connect' listener
+  console.log('connected to server!');
+});
+client.on('data', function(data) {
+  console.log(data.toString());
+  client.end();
+});
+client.on('end', function() {
+  console.log('disconnected from server');
+});
+*/
