@@ -1,0 +1,19 @@
+\documentclass[11pt,letter]{article}
+
+\input{./Preamble/Preamble}
+\author{Jens Emil Gydesen, Honam Bang}
+\date{\today}
+\title{Weekly Report - Week 6}
+\begin{document}
+\maketitle
+\section{Project Summary}
+We are developing a layer 7 load balancing system, codename ``Meercat'', that uses several load balancers to more efficiently balance the traffic amongst servers in a data center. The idea is that, rather than having a single load balancer, we have several load balancers that communicate with each other to load balance all servers. Each load balancer is able to send traffic to any server and we will use statistics to identify the required resources for each request.
+
+The goal is to, by having multiple load balancers, to more the system very scalable to a high amount of servers as well as eliminating having a single point of failure. 
+\section{Progress}
+So far we have discussed and design the architecture for the system. We have begun implementation, but so far we only have the basic architecture of the load balancing software and a way for load balancers to retrieve system information (CPU and memory usage) from the servers (needed so that we can choose the proper servers). 
+
+We have also setup a project and are currently working with a networking testbed called \url{emulab.net} that allows us to design a topology and allocate machine to perform our testing and do our studies. 
+\section{For Next Week}
+We will have a single load balancer running so that we can start focusing on communication between the load balancers and preparing our testing environment.  
+\end{document}
