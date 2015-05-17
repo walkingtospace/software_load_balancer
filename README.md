@@ -3,6 +3,10 @@
 **Meercat (alias)** is a software L7 load balancer for data center to expressively perform request
 routing / load balancing in Node.JS. 
 
+##Directory Structure
+- directory naming and structure follows MVC patterns 
+- run.js is init file : "node run"
+
 ## How to use
 
 ## Features
@@ -14,7 +18,6 @@ routing / load balancing in Node.JS.
 
 ## Behaviors
 
-## Buffers
 
 ## License 
 
