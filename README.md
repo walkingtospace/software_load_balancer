@@ -1,7 +1,7 @@
 # Meercat
 
-**Meercat (alias)** is a software L7 load balancer for data center to expressively perform request
-routing / load balancing in Node.JS. 
+**Meercat** is a software L7 load balancer for data center to expressively perform request
+routing / load balancing in Node.JS.  Meercat is implemented to proof the assumption that the overwall performance of network would be faster than before if a LB can loadbalance by CPU/Memory usage of its hosts.
 
 ##Directory Structure
 - directory naming and structure follows MVC patterns 
