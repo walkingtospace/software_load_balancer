@@ -4,8 +4,8 @@
 routing / load balancing in Node.JS.  Meercat is implemented to proof the assumption that the overall performance of a network would be faster than before if a LB can loadbalance traffic by depending on CPU/Memory usage of its hosts.
 
 ##Directory Structure
-- directory naming and structure follows MVC patterns 
-- run.js is init file : "node run"
+- Directory naming and structure follow the MVC pattern 
+- Initiating file : runs.js at root (do "node run")
 
 ## How to use
 
