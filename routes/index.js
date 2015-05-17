@@ -1,9 +1,30 @@
-var express = require('express');
-var router = express.Router();
+var hosts = require('../configs/hosts.json');
+var hostsize = hosts.hosts.length;
+var hostcount = 0;
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+exports.connect = function(app) {
+	app.get('/', index); 
+	app.get('/route/roundrobin', roundrobin); //basic
+	app.get('/route/resourcebase', resourcebase); //CPU,MEMORY-based scheduling
+}
 
-module.exports = router;
+function index(req, res, next) {
+	res.render('index', { title: 'Meercat Main Page' });
+}
+
+function roundrobin(req, res, next) {
+	if(hostcount > (hostsize-1)) {
+		hostcount = 0;
+	} else {
+		hostcount++;
+	}	
+
+	//redirect requests to host
+	
+}
+
+function resourcebase(res, res, next) {
+	//get hosts status
+	//chooose idle host
+	//redirect requests to host
+}
