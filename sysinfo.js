@@ -10,12 +10,10 @@ function getSysInfo(){
 	return json;
 }
 
+// Create server and listen on port 40000
 var net = require('net');
 net.createServer(function(socket){
     socket.write(getSysInfo());
-    socket.on('data', function(data){
-        socket.write(data.toString().toUpperCase())
-    });
 }).listen(40000);
 
 
