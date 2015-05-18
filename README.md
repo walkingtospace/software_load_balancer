@@ -24,7 +24,7 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the assump
 
 (The MIT License)
 
-Copyright (c) 2011 Guillermo Rauch &lt;guillermo@learnboost.com&gt;
+Copyright (c) 2015 Honam Bhang &lt;hobang@ucsd.edu&gt;, Emil "Thalley" Gydesen &lt;mrthalley@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
