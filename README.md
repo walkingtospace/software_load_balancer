@@ -16,9 +16,9 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the assump
 
 ## Round Robin Test
 - Two hosts are on running AWS instances by 'forever' (https://www.npmjs.com/package/forever).
-- host1 address: http://52.8.15.202:3000/
-- host2 address: http://52.8.72.3:3000/
-- roundrobin request : 1) download Meercat, 2) node.js, 3)npm install 4) "node run" 5)enter "http://rootaddress/route/roundrobin" into url, then it shows the load balancing results by the round robin
+- Dummy host1 address: http://52.8.15.202:3000/
+- Dummy host2 address: http://52.8.72.3:3000/
+- Roundrobin load balancing request : 1) download Meercat, 2) install node.js, 3) "npm install" 4) "node run" 5) enter "http://rootaddress/route/roundrobin" into url, then it shows the load balancing results by the round robin
 
 ## License 
 
