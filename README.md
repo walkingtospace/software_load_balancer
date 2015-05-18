@@ -7,8 +7,6 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the assump
 - Directory naming and structure follow the MVC pattern 
 - Initiating file : runs.js at root (do "node run")
 
-## How to use
-
 ## Features
 - A Meercat communicate with all other n-1 Meercats to distribute traffic efficiently  
 - Leverages the well-tested `node-http-proxy`.
@@ -16,8 +14,11 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the assump
 - Compatible with connect middleware (eg: qs parser, cookie decoder).
 - Middleware makes sticky/session load balancing trivial to write.
 
-## Behaviors
-
+## Round Robin test
+- Two hosts are on running AWS instances by 'forever' (https://www.npmjs.com/package/forever).
+- host1 address: http://52.8.15.202:3000/
+- host2 address: http://52.8.72.3:3000/
+- roundrobin request : http://52.8.123.153:3000/route/roundrobin, then it shows the load balancing result by round robin
 
 ## License 
 
