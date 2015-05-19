@@ -1,7 +1,0 @@
-Website:
-marmot.pdl.cmu.edu
-
-SSH:
-ssh username@marmot-ops.pdl.cmu.edu
-When logged into, login to nodeX via and
-ssh username@nodeX.EXPNAME.Reactor.marmot.pdl.cmu.local

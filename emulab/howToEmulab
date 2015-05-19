@@ -1,0 +1,25 @@
+Website:
+	marmot.pdl.cmu.edu
+
+To create an experiment:
+	Go to "Begin Experiement"
+	Enter name and description
+	Either use an already created NS file (network description file) or use the GUI editor to create a new one
+	Submit the experiment and wait for it to boot
+	Once it is booted, you can ssh to the ops node
+	See https://www.nmc-probe.org/wiki/UserGuide for more
+
+SSH:
+	ssh username@marmot-ops.pdl.cmu.edu
+	When logged into, login to nodeX via and
+	ssh username@NODENAME.EXPNAME.Reactor.marmot.pdl.cmu.local
+	or
+	ssh username@NODENAME.EXPONAME.Reactor
+
+When logged in:
+	run 'sudo -H /bin/tcsh' to gain root access (you are already in sudoers, so only if you need to be su)
+	The project repo is in /proj/Reactor/software_load_balancer
+	You can pull by adding your marmot ssh public key (located in ~/.ssh/id_rsa.pub) to github
+
+Installed software in the image:
+	Node 0.12.3 

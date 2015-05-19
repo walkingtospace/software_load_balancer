@@ -9,11 +9,22 @@
 \section{Project Summary}
 We are developing a layer 7 load balancing system, codename ``Meercat'', that uses several load balancers to more efficiently balance the traffic amongst servers in a data center. The idea is that, rather than having a single load balancer, we have several load balancers that communicate with each other to load balance all servers. Each load balancer is able to send traffic to any server and we will use statistics to identify the required resources for each request.
 
+We have looked at the Ananta (L4 software load balancer) paper (reference in the Duet paper from class)\cite{ananta} and also HAProxy\cite{haproxy}.
+
 The goal is to, by having multiple load balancers, to more the system very scalable to a high amount of servers as well as eliminating having a single point of failure. 
+
 \section{Progress}
 So far we have discussed and design the architecture for the system. We have implemented a single naive load balancer that does load balancing by round-robin on servers (tested on AWS). We have also implemented a way for load balancers to retrieve system information (CPU and memory usage) from the servers (needed so that we can choose the proper servers). 
 
 We have also setup a project and are currently working with a networking testbed called \url{emulab.net} that allows us to design a topology and allocate machine to perform our testing and do our studies. We are preparing a system image so that we can easily deploy a number of servers and load balancers. 
+
 \section{For Next Week}
 For next week we will start load balancing using information retrieved from the servers and start designing and implementing a way for the load balancers to communicate. We will also prepare our testing environment. 
+
+\begin{thebibliography}{9}
+  \bibitem{ananta}
+  Patel, Parveen, et al. "Ananta: Cloud scale load balancing." ACM SIGCOMM Computer Communication Review. Vol. 43. No. 4. ACM, 2013.
+  \bibitem{haproxy}
+  Tarreau, Willy. "HAProxy-The Reliable, High-Performance TCP/HTTP Load Balancer." 2011-8)[2013-4]. http://haproxy. lwt. eu (2012).
+\end{thebibliography}
 \end{document}
