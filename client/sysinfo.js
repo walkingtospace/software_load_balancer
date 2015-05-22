@@ -1,5 +1,6 @@
 // Create server and listen on port 40000
 var net = require('net');
+var ip = require("ip");
 
 var server = net.createServer(function(socket){
 	console.log('Server has been created');
@@ -19,7 +20,7 @@ function getSysInfo(){
 	var memCmd = "free | grep Mem | awk '{print $3/$2 * 100.0}'"
 	var cpu = exec(cpuCmd).toString();
 	var mem = exec(memCmd).toString();
-	var json = '{"cpu":' + cpu +', "mem":' + mem + '}';
+	var json = '{"ip":' + ip.address() + ' ,"cpu":' + cpu +', "mem":' + mem + '}';
 	
 	return json;
 }
