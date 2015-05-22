@@ -14,11 +14,17 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the assump
 - Compatible with connect middleware (eg: qs parser, cookie decoder).
 - Middleware makes sticky/session load balancing trivial to write.
 
-## Round Robin Test
+## Round Robin load balancing test
 - Two hosts are on running AWS instances by 'forever' (https://www.npmjs.com/package/forever).
 - Dummy host1 address: http://52.8.15.202:3000/
 - Dummy host2 address: http://52.8.72.3:3000/
-- Roundrobin load balancing request : 1) download Meercat, 2) install node.js, 3) "npm install" 4) "node run" 5) enter "http://rootaddress/route/roundrobin" into url, then it shows the load balancing results by the round robin
+- Roundrobin load balancing request : 1) download Meercat, 2) install node.js, 3) "npm install" 4) "node run" 5) enter "http://xxx.xxx.xxx.xxx[rootaddress]/route/roundrobin" into url, then it shows the load balancing results by the round robin
+
+## CPU/MEM usage based load balancing test
+- CPU usage-based load balancing request : "http:///xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/CPU" into url, then it shows the load balancing results by hosts' CPU usage
+- MEM usage-based load balancing request : "http:///xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/MEM" into url, then it shows the load balancing results by hosts' MEM usage
+
+
 
 ## License 
 
