@@ -21,8 +21,8 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the assump
 - Roundrobin load balancing request : 1) download Meercat, 2) install node.js, 3) "npm install" 4) "node run" 5) enter "http://xxx.xxx.xxx.xxx[rootaddress]/route/roundrobin" into url, then it shows the load balancing results by the round robin
 
 ## CPU/MEM usage based load balancing test
-- CPU usage-based load balancing request : "http:///xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/CPU" into url, then it shows the load balancing results by hosts' CPU usage
-- MEM usage-based load balancing request : "http:///xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/MEM" into url, then it shows the load balancing results by hosts' MEM usage
+- CPU usage-based load balancing request : "http://xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/CPU" into url, then it shows the load balancing results by hosts' CPU usage
+- MEM usage-based load balancing request : "http://xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/MEM" into url, then it shows the load balancing results by hosts' MEM usage
 
 
 
