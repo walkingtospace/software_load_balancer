@@ -9,7 +9,7 @@ var queue = [];
 exports.connect = function(app) {
 	app.get('/', index); 
 	app.get('/route/roundrobin', roundrobin); //basic
-	app.get('/route/resourcebase', resourcebase); //CPU,MEMORY-based scheduling
+	app.get('/route/resourcebase/:type', resourcebase); //CPU,MEMORY-based scheduling
 
 	runChild();
 }
@@ -28,7 +28,7 @@ function runChild() { //for health check of hosts
 				if(queue[json.ip] != undefined) {
 					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
 
-					console.log(Object.keys(queue).length+",");
+				//	console.log(Object.keys(queue).length+",");
 				} else {
 					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
 				}
@@ -64,11 +64,14 @@ function roundrobin(req, res, next) {
 }
 
 function resourcebase(req, res, next) {
-	var nextHost = getPriority("CPU");	
+	var nextHost = getPriority(req.params.type);	
 
-	console.log(nextHost);
-	//console.log("[CPU/Mem] Redirect traffic to : " + nextHost.IP + " port:" + nextHost.port); 
-	//middleware.redirector(nextHost.IP, nextHost.port, res, send);
+	if(nextHost !== undefined) {
+		console.log("[CPU/MEM] Redirect traffic to : " + nextHost.IP + " port:" + nextHost.port); 
+		middleware.redirector(nextHost.IP, nextHost.port, res, send, nextHost);
+	} else {
+		console.log("[CPU/MEM] Redirection failed");
+	}
 }
 
 function getPriority(type) {
@@ -77,6 +80,7 @@ function getPriority(type) {
 	
 	if(type === "CPU") {
 		temp = {"cpu": 99.9999};
+
 		for(var i in queue) {
 			if(temp.cpu > parseInt(queue[i].cpu)) {	
 				temp = queue[i];
@@ -84,8 +88,10 @@ function getPriority(type) {
 			}
 		}	
 	} else if(type === "MEM") {
+		temp = {"mem": 99.9999};
+
 		for(var i in queue) {
-			if(temp.mem > queue[i].mem) {	
+			if(temp.mem > parseInt(queue[i].mem)) {	
 				temp = queue[i];
 				IP = i;
 			}
@@ -95,18 +101,32 @@ function getPriority(type) {
 	for(var i=0; i<hostsize ; ++i) {
 		if(hosts.hosts[i].IP == IP) {
 
-			return {"IP" : IP, "port" : hosts.hosts[i].port};
+			return {"IP" : IP, "port" : hosts.hosts[i].port, "status" : temp};
 		}
 	}
 
 	return undefined;
 }
 
-function send(res, resFromHost) {
+function send(res, resFromHost, info) {
 	if(resFromHost === undefined) {
 		res.status(200).send("Got error from host " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port);
 
 	} else {
-		res.status(200).send("Successfully received response from " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port + " status:" + resFromHost.statusCode);
+		if(info !== undefined) {
+			var header = "Successfully received response </br>";
+			var address = "IP: "+ hosts.hosts[hostcount].IP + " PORT: " + hosts.hosts[hostcount].port + "</br>"; 
+			var resStatus = "RESPONSE CODE: " + resFromHost.statusCode + "</br>";
+			var CPU = "CPU usage: " + info.status.cpu + "%" + "</br>";
+			var MEM = "MEM usage: " + info.status.mem + "%";  
+
+			res.status(200).send(header + address+ resStatus + CPU + MEM);
+		} else {
+			var header = "Successfully received response </br>";
+			var address = "IP: "+ hosts.hosts[hostcount].IP + " PORT: " + hosts.hosts[hostcount].port + "</br>"; 
+			var resStatus = "RESPONSE CODE: " + resFromHost.statusCode + "</br>";
+
+			res.status(200).send(header + address+ resStatus);
+		}
 	}
 }
