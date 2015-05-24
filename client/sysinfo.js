@@ -1,6 +1,7 @@
 // Create server and listen on port 40000
 var net = require('net');
-var externalip = require("externalip");
+//var externalip = require("externalip"); //public IP
+var ip = require("ip"); //local IP
 var publicip = null;
 
 var server = net.createServer(function(socket){
@@ -21,12 +22,14 @@ function getSysInfo(){
 	var memCmd = "free | grep Mem | awk '{print $3/$2 * 100.0}'"
 	var cpu = exec(cpuCmd).toString();
 	var mem = exec(memCmd).toString();
-	var json = '{"ip": "' + publicip + '","cpu": "' + cpu +'", "mem": "' + mem + '" }';
+	var json = '{"ip": "' + ip.address() + '","cpu": "' + cpu +'", "mem": "' + mem + '" }';
 
 	console.log(json);	
 	return json;
 }
 
+/*
 externalip(function (err,ip) {
 	publicip = ip;
 });
+*/
