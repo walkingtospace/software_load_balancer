@@ -22,7 +22,7 @@ var hostjson = '{ "hosts": [';
 servers.forEach(function(server){hostjson += '{ "IP":"' + server + '","port":' + "3000" + '},'});
 hostjson = hostjson.substring(0, hostjson.length - 1); //Remove ekstra comma
 hostjson += '] }';
-var prettyJSON = JSON.stringify(JSON.parse(hostjson), null, 2)
+var prettyJSON = JSON.stringify(JSON.parse(hostjson), null, 2);
 
 //Write to file
 fs.writeFile("./configs/hosts.json", prettyJSON, function(err) {
