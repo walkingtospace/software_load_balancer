@@ -23,9 +23,8 @@ function getSysInfo(){
 	var cpu = exec(cpuCmd).toString();
 	var mem = exec(memCmd).toString();
 	var json = '{"ip": "' + ip.address() + '","cpu": "' + cpu +'", "mem": "' + mem + '" }';
-
-	console.log(json);	
-	return json;
+	var prettyJSON = JSON.stringify(JSON.parse(json), null, 2)
+	return prettyJSON;
 }
 
 /*
