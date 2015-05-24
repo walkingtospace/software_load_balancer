@@ -7,10 +7,11 @@ var publicip = null;
 var server = net.createServer(function(socket){
 	console.log('Server has been created');
 
-	socket.on('data', function(data){ 
+	socket.on('data', function(data){
 		console.log("resv data");
-
-		socket.write(getSysInfo());
+		var sysInfo = getSysInfo();
+		console.log(sysInfo)
+		socket.write(sysInfo);
 	});
 }).listen(40000);
 
