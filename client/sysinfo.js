@@ -19,9 +19,10 @@ var server = net.createServer(function(socket){
 function getSysInfo(){
 	// Exec does so that we can call arbitrary shell commands
 	var exec = require('child_process').execSync;
-	var cpuCmd = "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'";
+	var cpuCmd = "ps aux  | awk 'BEGIN { sum = 0 }  { sum += $3 }; END { print sum }'";
+	var cpuCnt = "grep -c ^processor /proc/cpuinfo";
 	var memCmd = "free | grep Mem | awk '{print $3/$2 * 100.0}'";
-	var cpu = exec(cpuCmd).toString();
+	var cpu = (exec(cpuCmd)/exec(cpuCnt)).toString();
 	var mem = exec(memCmd).toString();
 	cpu = cpu.substring(0, cpu.length - 1); //Remove newline
 	mem = mem.substring(0, mem.length - 1); //Remove newline
