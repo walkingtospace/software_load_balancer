@@ -1,0 +1,2 @@
+var NO_CPU_RESOURCE = "NO_CPU_RESOURCE";
+

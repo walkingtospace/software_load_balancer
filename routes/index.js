@@ -33,7 +33,7 @@ function runChild() { //for health check of hosts
 					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
 				}
 			} catch (e) {
-				console.log("json format error"); 
+				//console.log("json format error"); 
 			}	
 		}
 	});
@@ -66,11 +66,18 @@ function roundrobin(req, res, next) {
 function resourcebase(req, res, next) {
 	var nextHost = getPriority(req.params.type);	
 
-	if(nextHost !== undefined) {
+	if(nextHost === undefined) {
+		console.log("[CPU/MEM] Redirection failed");	
+	
+		res.status(200).send("Redirection failed");
+	} else if(nextHost.IP !== undefined && nextHost.port !== undefined){
 		console.log("[CPU/MEM] Redirect traffic to : " + nextHost.IP + " port:" + nextHost.port); 
+		
 		middleware.redirector(nextHost.IP, nextHost.port, res, send, nextHost);
 	} else {
-		console.log("[CPU/MEM] Redirection failed");
+		console.log("No resources");
+
+		res.status(200).send("No available resources");
 	}
 }
 
@@ -98,6 +105,17 @@ function getPriority(type) {
 		}
 	}
 
+	var NO_CPU_RESOURCE = "NOCPU";
+	var NO_MEM_RESOURCE = "NOMEM";
+
+	if(temp.cpu !== undefined && temp.cpu >= 90) {
+	
+		return NO_CPU_RESOURCE;
+	} else if(temp.mem !== undefined && temp.mem >= 90) {
+	
+		return NO_MEM_RESOURCE;
+	}
+
 	for(var i=0; i<hostsize ; ++i) {
 		if(hosts.hosts[i].IP == IP) {
 
@@ -110,7 +128,7 @@ function getPriority(type) {
 
 function send(res, resFromHost, info) {
 	if(resFromHost === undefined) {
-		res.status(200).send("Got error from host " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port);
+		res.status(200).send("Got error from host " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port);v
 
 	} else {
 		if(info !== undefined) {
