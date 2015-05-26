@@ -9,7 +9,7 @@ if(process.argv.length < 3){
 
 	//Finds the actual name of the experiment to finde the tbreport.log file
 	var expname = (exec("hostname").toString().split(/[.]/))[1];
-	var experiments = exec("ls /proj/Reactor/exp").split(/[\n]/);
+	var experiments = exec("ls /proj/Reactor/exp").toString().split(/[\n]/);
 	for (var i = 0; i < experiments.length; i++)
 		if (experiments[i].toLowerCase() == expname){
 			path = "/proj/Reactor/exp/" + experiments[i] + "/tbdata/tbreport.log";
