@@ -6,18 +6,16 @@ source tb_compat.tcl
 # Nodes
 set LB [$ns node]
 tb-set-node-os $LB ubuntu-12-meercat
-set node0 [$ns node]
-tb-set-node-os $node0 ubuntu-12-meercat
-set node1 [$ns node]
-tb-set-node-os $node1 ubuntu-12-meercat
-set node2 [$ns node]
-tb-set-node-os $node2 ubuntu-12-meercat
-set node3 [$ns node]
-tb-set-node-os $node3 ubuntu-12-meercat
-set node4 [$ns node]
-tb-set-node-os $node4 ubuntu-12-meercat
+tb-set-startcmd $LB "/proj/Reactor/software_load_balancer/emulab/clientstartupscript.sh"
 set Generator [$ns node]
 tb-set-node-os $Generator ubuntu-12-meercat
+
+set maxnodes 5
+for {set i 1} {$i <= $maxnodes} {incr i} {
+    set node($i) [$ns node]
+    tb-set-node-os $node($i) ubuntu-12-meercat
+    tb-set-startcmd $node($i) "/proj/Reactor/software_load_balancer/emulab/clientstartupscript.sh"
+}
 
 $ns rtproto Static
 $ns run
