@@ -6,7 +6,7 @@ source tb_compat.tcl
 # Nodes
 set LB [$ns node]
 tb-set-node-os $LB ubuntu-12-meercat
-tb-set-startcmd $LB "/proj/Reactor/software_load_balancer/emulab/clientstartupscript.sh"
+tb-set-startcmd $LB "/proj/Reactor/software_load_balancer/emulab/lbstartupscript.sh"
 set Generator [$ns node]
 tb-set-node-os $Generator ubuntu-12-meercat
 
