@@ -1,12 +1,25 @@
+var fs = require('fs');
+var exec = require('child_process').execSync;
+var path;
+
 // Finds and adds all servers to the hosts.json file in the configs folder
 // Uses data from the tbreport.log file located in /proj/Reactor/exp/EXPNAME/tbdata/
 if(process.argv.length < 3){
-	console.log("No path for tbreport.log was given");
-	return;
+	console.log("No path for tbreport.log was given, assuming emulab host");
+
+	//Finds the actual name of the experiment to finde the tbreport.log file
+	var expname = (exec("hostname").toString().split(/[.]/))[1];
+	var experiments = exec("ls /proj/Reactor/exp").split(/[\n]/);
+	for (var i = 0; i < experiments.length; i++)
+		if (experiments[i].toLowerCase() == expname){
+			path = "/proj/Reactor/exp/" + experiments[i] + "/tbdata/tbreport.log";
+			break;
+		}
 }
-var fs = require('fs');
-//path of the tbreport.log file
-var path = process.argv.slice(2).toString();
+else
+	path = process.argv.slice(2).toString();
+
+
 // Read the file as lowercase
 var file = fs.readFileSync(path).toString().toLowerCase();
 //Split the file into strings separated by space so we can finde hostnames
