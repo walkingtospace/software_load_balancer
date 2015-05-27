@@ -1,0 +1,63 @@
+\usepackage[utf8x]{inputenc} %Unicode chars; æ,ø,å osv. 
+%\usepackage[danish]{babel} %Danish LaTeX format; Chapters etc.
+\usepackage{amsmath, amsfonts, amssymb} %Math symboler
+\usepackage{ucs} %Greek letters
+\usepackage{amsthm} %Custom environments
+\usepackage{graphicx} %For figures
+\usepackage[bookmarks=true,bookmarksopen=true,bookmarksnumbered=true]{hyperref} %Hyperrefs in PDF
+\usepackage{url} %Handles URLs
+%\usepackage{natbib} %bibliography package
+%\usepackage[section]{placeins} %Package places a FloatBarrier before every section
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry} %Larger margins
+\usepackage[usenames, dvipsnames]{xcolor} %Custom colors
+\usepackage{tikz} %For tikz figures
+%\usepackage{subfigure} %For subfigures
+\usepackage{listings} %For code listings
+\usepackage{textcomp} %Allows extra special symbols
+\usepackage{algorithm} %For algorithms
+\usepackage{cleveref} %Cref for all environment
+\usepackage{pgfplots}
+\usepackage{filecontents}
+
+%Tikz stuff
+\usetikzlibrary{shapes,arrows}  
+\tikzstyle{block} = [rectangle, draw, text centered, rounded corners, minimum height=1cm]
+\tikzstyle{line} = [draw, -latex']
+
+%Bibliographystyle
+\bibliographystyle{plain}
+
+%Figure path
+\graphicspath{{./Figures/}}
+
+\input{./Preamble/Lstlanguages}
+%Listings options
+\lstset{ 
+literate=%
+{æ}{{\ae}}1
+{å}{{\aa}}1
+{ø}{{\o}}1
+{Æ}{{\AE}}1
+{Å}{{\AA}}1
+{Ø}{{\O}}1,
+  	basicstyle=\footnotesize, %Size of code
+  	numbers=left, 
+  	numberstyle=\tiny\color{black},
+  	stepnumber=1,
+ 	backgroundcolor=\color{white},
+    frame=single, % Frame style
+    rulecolor=\color{black}, % Frame color
+  	tabsize=4,
+  	breaklines=true,
+  	showstringspaces=false,
+  	captionpos=b
+}
+
+%HEADER AND FOOTER
+\usepackage{fancyhdr}
+\fancyhf{}
+\renewcommand{\footrulewidth}{\headrulewidth}
+\fancyhead[LE]{\leftmark}
+\fancyhead[OR]{\rightmark}
+\fancyfoot[OR]{\thepage}
+\fancyfoot[LE]{\thepage}
