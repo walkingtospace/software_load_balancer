@@ -128,7 +128,7 @@ function getPriority(type) {
 
 function send(res, resFromHost, info) {
 	if(resFromHost === undefined) {
-		res.status(200).send("Got error from host " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port);v
+		res.status(200).send("Got error from host " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port);
 
 	} else {
 		if(info !== undefined) {
