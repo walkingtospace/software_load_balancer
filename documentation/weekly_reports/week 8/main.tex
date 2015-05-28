@@ -1,9 +1,9 @@
 \documentclass[11pt,letter]{article}
 
 \input{./Preamble/Preamble}
-\author{Jens Emil Gydesen, Honam Bang}
+\author{Honam Bang and Jens Emil Gydesen}
 \date{\today}
-\title{Weekly Report - Week 7}
+\title{Weekly Report - Week 8}
 \begin{document}
 \maketitle
 \section{Project Summary}
@@ -16,10 +16,12 @@ The goal is to, by having multiple load balancers, to more the system very scala
 \section{Progress}
 In implementation part, we have implemented a single software load balancer for layer 7 and the traffic test is also done with 'httperf' tool in Linux. By the result, our single load balancer at least can handle amount of http request easily. For the CPU/MEM-bound requests, we also confirmed that our load balancer can pass the test. For now it checks hosts' status by time-based polling in every 5 seconds. So far, we believe that we are ready to go the next step, 'multi level load balancing system' perfectly.
 
-\section{For Next Week}
-For next week, we will design a proper topology for multi load balancing system in consideration of our performance measurement experiment. A topology will include 9~10 instances at Emulab cloud. One instance will be used as a traffic generator and 2~3 instances will be used for load balancers, and the remaining instances are for hosts. Also, we will research on our critical assumption that "the reason we need multi load balancer and why they should communicate to each other?". For now, we have a plan to focus on the failure-tolerance. 
+In terms of setting up the test environment, we have by now fully automated Emulab such that we can simply define the number of end-hosts and the number of load balancers and then each load balancer will automatically connect to all of the end-hosts and start balancing load. 
 
-For the implementation part, we start connecting load balancers together. We will design communication protocols and when/how they share some meaningful information. 
+\section{For Next Week}
+For next week, we will design a proper topology for multi load balancing system in consideration of our performance measurement experiment. A topology will include 9~10 instances at Emulab cloud. One instance will be used as a traffic generator and 2~3 instances will be used for load balancers, and the remaining instances are for hosts. Also, we will research on our research question: ``Why should we have multiple load balancers and why should they communicate with each other?''. For now, we have a plan to focus on the failure-tolerance. 
+
+For the implementation part, we start connecting load balancers together. We will design communication protocols and when/how they share some meaningful information and how we will handle a failure at one of the load balancers. 
 
 \begin{thebibliography}{9}
   \bibitem{ananta}
