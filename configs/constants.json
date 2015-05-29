@@ -1,0 +1,17 @@
+{
+	"SERVER" : {
+		"PORT" : 3000,
+		"NO_RESOURCE" : "NO_RESOURCE",
+		"TIMEFORHOST" : 2000,
+		"CPU" : "CPU",
+		"MEM" : "MEM",
+		"NO_CPU_RESOURCE" : "NO_CPU_RESOURCE",
+		"NO_MEM_RESOURCE" : "NO_MEM_RESOURCE"
+	},
+
+	"HOST" : {
+		"PORT" : 40000,	
+		"POLLING_INTERVAL" : 5000,
+		"THRESHOLD" : 60
+	}
+}

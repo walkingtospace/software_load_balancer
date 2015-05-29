@@ -1,6 +1,6 @@
 var net = require('net');
+var constant = require("../configs/constants.json");
 var client = new net.Socket();
-var interval = null;
 var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var queue = []; 
@@ -8,10 +8,10 @@ var queue = [];
 (function() {
 	for(var i=0; i<hostsize ; ++i) {
 		var IP = hosts.hosts[i].IP;
-		var client = net.connect(40000, IP, function(data) { //'connect' listener
+		var client = net.connect(constant.HOST.PORT, IP, function(data) { //'connect' listener
 			console.log('A host has been connected');
-
-			interval = setInterval(writeTo, 5000);
+			//interval = setInterval(writeTo, 5000);
+			setTimeout(writeTo, constant.SERVER.TIMEFORHOST);
 		});
 			
 		client.on('data', function(data) {
@@ -21,9 +21,9 @@ var queue = [];
 		client.on('end', function() {
 			console.log('Disconnected');
 
-			if(interval != null) {
+			/*if(interval != null) {
 				clearInterval(interval);
-			}
+			}*/
 		});
 
 		client.on('error', function() {
@@ -33,7 +33,6 @@ var queue = [];
 		queue.push(client);
 	}
 })();
-
 
 function writeTo() {
 	for(var i=0; i<hostsize ; ++i) {

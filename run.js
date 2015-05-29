@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes');
-
+var constant = require('./configs/constants.json');
 var app = express();
 
 // view engine setup
@@ -53,7 +53,7 @@ app.use(function(err, req, res, next) {
 	});
 });
 
-var server = app.listen(3000, function () {
+var server = app.listen(constant.SERVER.PORT, function () {
 	var host = server.address().address;
   	var port = server.address().port;
 

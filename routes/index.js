@@ -1,3 +1,4 @@
+var constant = require('../configs/constants.json');
 var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var hostcount = 0;
@@ -19,7 +20,7 @@ function runChild() { //for health check of hosts
 		
 	childProcess.stdout.on('data', function(data) {
     		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
-		
+	console.log(data);	
 		if(data.indexOf('connect') != -1) {
 			console.log(data);
 		} else {
@@ -85,8 +86,8 @@ function getPriority(type) {
 	var IP;
 	var temp;
 	
-	if(type === "CPU") {
-		temp = {"cpu": 99.9999};
+	if(type === constant.SERVER.CPU) {
+		temp = {"cpu": constant.HOST.THRESHOLD};
 
 		for(var i in queue) {
 			if(temp.cpu > parseInt(queue[i].cpu)) {	
@@ -94,8 +95,8 @@ function getPriority(type) {
 				IP = i;
 			}
 		}	
-	} else if(type === "MEM") {
-		temp = {"mem": 99.9999};
+	} else if(type === constant.SERVER.MEM) {
+		temp = {"mem": constant.HOST.THRESHOLD};
 
 		for(var i in queue) {
 			if(temp.mem > parseInt(queue[i].mem)) {	
@@ -105,15 +106,12 @@ function getPriority(type) {
 		}
 	}
 
-	var NO_CPU_RESOURCE = "NOCPU";
-	var NO_MEM_RESOURCE = "NOMEM";
-
-	if(temp.cpu !== undefined && temp.cpu >= 90) {
+	if(temp.cpu !== undefined && temp.cpu >= constant.HOST.THRESHOLD) {
 	
-		return NO_CPU_RESOURCE;
-	} else if(temp.mem !== undefined && temp.mem >= 90) {
+		return constant.SERVER.NO_CPU_RESOURCE;
+	} else if(temp.mem !== undefined && temp.mem >= constant.HOST.THERESHOLD) {
 	
-		return NO_MEM_RESOURCE;
+		return constant.SERVER.NO_MEM_RESOURCE;
 	}
 
 	for(var i=0; i<hostsize ; ++i) {
