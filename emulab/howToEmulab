@@ -21,9 +21,9 @@ When logged in:
 	The project repo is in /proj/Reactor/software_load_balancer
 	You can pull by adding your marmot ssh public key (located in ~/.ssh/id_rsa.pub) to github
 	To read output from a given process (e.g. node run or node /client/sysinfo), do 
-		tail -f /proc/<pid>/fd/1 for stdin
+		tail -f /proc/<pid>/fd/0 for stdin
 		tail -f /proc/<pid>/fd/1 for stdout
-		tail -f /proc/<pid>/fd/1 for stderr
+		tail -f /proc/<pid>/fd/2 for stderr
 		Where pid is the process ID of that process (find via e.g. ps aux)
 
 Installed software in the image:
