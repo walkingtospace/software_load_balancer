@@ -17,10 +17,10 @@ exports.connect = function(app) {
 
 function runChild() { //for health check of hosts
 	childProcess = exec('node ./controllers/hostChecker.js');
-		
+	
 	childProcess.stdout.on('data', function(data) {
     		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
-	console.log(data);	
+	
 		if(data.indexOf('connect') != -1) {
 			console.log(data);
 		} else {

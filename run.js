@@ -54,10 +54,9 @@ app.use(function(err, req, res, next) {
 });
 
 var server = app.listen(constant.SERVER.PORT, function () {
-	var host = server.address().address;
   	var port = server.address().port;
 
-	console.log('Meercat listening at http://%s:%s', host, port);
+	console.log('Meercat is listening at port %s', port);
 });
 
 
