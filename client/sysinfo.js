@@ -33,7 +33,6 @@ var server = net.createServer(function(soc){
 	});
 }).listen(constant.HOST.PORT);
 
-// Returns system information as a JSON object
 function getSysInfo(){
 	var cpu = exec(cpuCmd).toString();
 	var mem = exec(memCmd).toString();
@@ -51,6 +50,7 @@ function checkStatus() {
 	var json = getSysInfo();
 
 	if(json.cpu > constant.HOST.THRESHOLD) { 
+
 		socket.write(json);
 	} 
 }
