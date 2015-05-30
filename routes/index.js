@@ -5,7 +5,7 @@ var hostcount = 0;
 var middleware = require('../controllers/middleware');
 var exec = require('child_process').exec;
 var childProcess = null;
-var queue = [];
+var queue = []; //host information
 
 exports.connect = function(app) {
 	app.get('/', index); 
@@ -16,7 +16,7 @@ exports.connect = function(app) {
 }
 
 function runChild() { //for health check of hosts
-	childProcess = exec('node ./controllers/childprocess.js');
+	childProcess = exec('node ./controllers/hostChecker.js');
 		
 	childProcess.stdout.on('data', function(data) {
     		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
