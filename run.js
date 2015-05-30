@@ -59,5 +59,4 @@ var server = app.listen(constant.SERVER.PORT, function () {
 	console.log('Meercat is listening at port %s', port);
 });
 
-
 module.exports = app;

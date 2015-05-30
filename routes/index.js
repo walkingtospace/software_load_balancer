@@ -4,7 +4,9 @@ var hostsize = hosts.hosts.length;
 var hostcount = 0;
 var middleware = require('../controllers/middleware');
 var exec = require('child_process').exec;
-var childProcess = null;
+var hostCheckProcess = null;
+var slaveCheckProcess = null;
+
 var queue = []; //host information
 
 exports.connect = function(app) {
@@ -12,39 +14,58 @@ exports.connect = function(app) {
 	app.get('/route/roundrobin', roundrobin); //basic
 	app.get('/route/resourcebase/:type', resourcebase); //CPU,MEMORY-based scheduling
 
-	runChild();
+	if(process.env.type === "master") {
+		this.runHostChecker();
+		//this.runSlaveChecker();		
+	} 
 }
 
-function runChild() { //for health check of hosts
-	childProcess = exec('node ./controllers/hostChecker.js');
+exports.runSlaveChecker = function() {
+	slaveCheckProcess = exec('node ./controllers/slaveChecker.js');
+
+	slaveCheckProcess.stdout.on('data', function(data) {
+    		//respond to ping
+
+	});
+
+	slaveCheckProcess.stderr.on('data', function(data) {
+    		console.log('[parent] slaveChecker has errors :' + data);
+	});
+
+	slaveCheckProcess.on('close', function(code) {
+		console.log('[parent] slaveChecker process quit: ' + code);
+	});
+
+}
+
+exports.runHostChecker = function() { //To get resource information of hosts
+	hostCheckProcess = exec('node ./controllers/hostChecker.js');
 	
-	childProcess.stdout.on('data', function(data) {
+	hostCheckProcess.stdout.on('data', function(data) {
     		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
-	
+		//console.log('[parent] '+data);
 		if(data.indexOf('connect') != -1) {
-			console.log(data);
+			console.log(data); 
 		} else {
 			try {
 				var json = JSON.parse(data);
 				if(queue[json.ip] != undefined) {
 					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
 
-				//	console.log(Object.keys(queue).length+",");
-				} else {
-					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
-				}
+					//update slaves with queue info
+				} 
 			} catch (e) {
 				//console.log("json format error"); 
 			}	
 		}
 	});
 
-	childProcess.stderr.on('data', function(data) {
-    		console.log('[parent] Child has errors :' + data);
+	hostCheckProcess.stderr.on('data', function(data) {
+    		console.log('[parent] hostChecker has errors :' + data);
 	});
 
-	childProcess.on('close', function(code) {
-		console.log('[parent] Child process quit: ' + code);
+	hostCheckProcess.on('close', function(code) {
+		console.log('[parent] hostChecker process quit: ' + code);
 	});
 }
 

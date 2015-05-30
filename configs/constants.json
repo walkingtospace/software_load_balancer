@@ -1,6 +1,7 @@
 {
 	"SERVER" : {
 		"PORT" : 3000,
+		"INNERPORT" : 3001,
 		"NO_RESOURCE" : "NO_RESOURCE",
 		"TIMEFORHOST" : 2000,
 		"CPU" : "CPU",

@@ -28,7 +28,8 @@ var server = net.createServer(function(soc){
 	socket = soc;
 	soc.on('data', function(data){
 		console.log("resv data");
-		soc.write(getSysInfo());	
+		soc.write(getSysInfo());
+		console.log('Send data');	
 		interval = setInterval(checkStatus, constant.HOST.POLLING_INTERVAL);
 	});
 }).listen(constant.HOST.PORT);
@@ -50,6 +51,7 @@ function checkStatus() {
 	var json = getSysInfo();
 
 	if(json.cpu > constant.HOST.THRESHOLD) { 
+		console.log('Send data');
 
 		socket.write(json);
 	} 
