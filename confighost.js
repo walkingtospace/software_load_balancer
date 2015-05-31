@@ -40,11 +40,11 @@ var addresses = "ip";
 //Insert ip, port and hostname for each hostname
 hostnames.forEach(function(hostname){
 	dns.lookup(hostname, function onLookup(err, addresses, family) {
-		hostjson += '{ "IP":"' + addresses + '","port":' + "3000" + ',"hostname":"' + hostname + '"},';
+		hostjson += '{ "IP":"' + addresses + '","port":"' + constant.SERVER.PORT + '","hostname":"' + hostname + '"},';
 	});
 });
 
-setTimeout(printHostfile, 10);
+setTimeout(printHostfile, 100);
 function printHostfile(){
 	hostjson = hostjson.substring(0, hostjson.length - 1); //Remove ekstra comma
 	hostjson += '] }';
