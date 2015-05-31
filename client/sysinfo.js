@@ -50,11 +50,13 @@ function getSysInfo(){
 function checkStatus() {
 	var json = getSysInfo();
 
-	if(json.cpu > constant.HOST.THRESHOLD) { 
+	if(json.cpu > constant.HOST.CPU_THRESHOLD || json.mem > constant.MEM_THRESHOLD) { 
 		console.log('Send data');
 
 		socket.write(json);
 	} 
+
+
 }
 
 /*

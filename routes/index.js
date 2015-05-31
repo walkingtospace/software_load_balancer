@@ -43,17 +43,19 @@ exports.runHostChecker = function() { //To get resource information of hosts
 	
 	hostCheckProcess.stdout.on('data', function(data) {
     		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
-		//console.log('[parent] '+data);
+	//	console.log('[parent] '+data);
 		if(data.indexOf('connect') != -1) {
 			console.log(data); 
 		} else {
 			try {
 				var json = JSON.parse(data);
-				if(queue[json.ip] != undefined) {
-					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
 
+				if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
+					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
 					//update slaves with queue info
-				} 
+				} else {
+					console.log("json parsing error");
+				}
 			} catch (e) {
 				//console.log("json format error"); 
 			}	
@@ -97,7 +99,7 @@ function resourcebase(req, res, next) {
 		
 		middleware.redirector(nextHost.IP, nextHost.port, res, send, nextHost);
 	} else {
-		console.log("No resources");
+		console.log("No available resources");
 
 		res.status(200).send("No available resources");
 	}
@@ -108,7 +110,7 @@ function getPriority(type) {
 	var temp;
 	
 	if(type === constant.SERVER.CPU) {
-		temp = {"cpu": constant.HOST.THRESHOLD};
+		temp = {"cpu": constant.HOST.CPU_THRESHOLD};
 
 		for(var i in queue) {
 			if(temp.cpu > parseInt(queue[i].cpu)) {	
@@ -117,7 +119,7 @@ function getPriority(type) {
 			}
 		}	
 	} else if(type === constant.SERVER.MEM) {
-		temp = {"mem": constant.HOST.THRESHOLD};
+		temp = {"mem": constant.HOST.MEM_THRESHOLD};
 
 		for(var i in queue) {
 			if(temp.mem > parseInt(queue[i].mem)) {	
@@ -127,15 +129,15 @@ function getPriority(type) {
 		}
 	}
 
-	if(temp.cpu !== undefined && temp.cpu >= constant.HOST.THRESHOLD) {
+	if(temp.cpu !== undefined && temp.cpu >= constant.HOST.CPU_THRESHOLD) {
 	
 		return constant.SERVER.NO_CPU_RESOURCE;
-	} else if(temp.mem !== undefined && temp.mem >= constant.HOST.THERESHOLD) {
+	} else if(temp.mem !== undefined && temp.mem >= constant.HOST.MEM_THERESHOLD) {
 	
 		return constant.SERVER.NO_MEM_RESOURCE;
 	}
 
-	for(var i=0; i<hostsize ; ++i) {
+	for(var i=0; i<hostsize ; ++i) { //the lowest-resource-usage-first-served
 		if(hosts.hosts[i].IP == IP) {
 
 			return {"IP" : IP, "port" : hosts.hosts[i].port, "status" : temp};

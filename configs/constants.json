@@ -15,6 +15,7 @@
 	"HOST" : {
 		"PORT" : 40000,	
 		"POLLING_INTERVAL" : 5000,
-		"THRESHOLD" : 60
+		"CPU_THRESHOLD" : 70,
+		"MEM_THRESHOLD" : 80
 	}
 }
