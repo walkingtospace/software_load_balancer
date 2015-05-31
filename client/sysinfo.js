@@ -29,6 +29,7 @@ var server = net.createServer(function(soc){
 	soc.on('data', function(data){
 		console.log("resv data");
 		soc.write(getSysInfo());
+		
 		console.log('Send data');	
 		interval = setInterval(checkStatus, constant.HOST.POLLING_INTERVAL);
 	});

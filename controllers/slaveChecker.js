@@ -2,15 +2,16 @@ var net = require('net');
 var constant = require("../configs/constants.json");
 
 (function() {
-	var server = net.createServer(function(soc){
-		console.log('Slave checking server has been created');
-		socket = soc;
-		soc.on('data', function(data){
-			console.log("resv ping");
-			soc.write("alive");
-			console.log('Send ping');	
+	var server = net.createServer(function(socket) {
+		console.log('Slave Listener is listening at port %s', constant.SERVER.INNERPORT);
+		
+		socket.on('data', function(data){
+			console.log("Receive ping : " +  data);
+			soc.write("master"); 
+			console.log("Send ping : I'm a master");	
 		});
-	}).listen(constant.HOST.INNERPORT);
+		
+	}).listen(constant.SERVER.INNERPORT);
 })();
 
 

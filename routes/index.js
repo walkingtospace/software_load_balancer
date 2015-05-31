@@ -14,10 +14,18 @@ exports.connect = function(app) {
 	app.get('/route/roundrobin', roundrobin); //basic
 	app.get('/route/resourcebase/:type', resourcebase); //CPU,MEMORY-based scheduling
 
-	if(process.env.type === "master") {
+	if(process.env.type === constant.SERVER.MASTER) {	
 		this.runHostChecker();
-		//this.runSlaveChecker();		
-	} 
+		this.runSlaveChecker();
+	} else if(process.env.type === constant.SERVER.SLAVE) {
+		this.runMasterChecker();
+	}
+}
+
+exports.runMasterChecker = function() {
+
+
+
 }
 
 exports.runSlaveChecker = function() {
@@ -25,7 +33,7 @@ exports.runSlaveChecker = function() {
 
 	slaveCheckProcess.stdout.on('data', function(data) {
     		//respond to ping
-
+    		console.log(data);
 	});
 
 	slaveCheckProcess.stderr.on('data', function(data) {
@@ -43,7 +51,7 @@ exports.runHostChecker = function() { //To get resource information of hosts
 	
 	hostCheckProcess.stdout.on('data', function(data) {
     		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
-	//	console.log('[parent] '+data);
+		console.log('[parent] '+data);
 		if(data.indexOf('connect') != -1) {
 			console.log(data); 
 		} else {
