@@ -9,8 +9,8 @@
 		"MEM" : "MEM",
 		"NO_CPU_RESOURCE" : "NO_CPU_RESOURCE",
 		"NO_MEM_RESOURCE" : "NO_MEM_RESOURCE",
-		"MASTER" : "MASTER",
-		"SLAVE" : "SLAVE"
+		"MASTER" : "master",
+		"SLAVE" : "slave"
 	},
 
 	"HOST" : {

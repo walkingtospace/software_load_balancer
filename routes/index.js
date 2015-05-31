@@ -6,6 +6,7 @@ var middleware = require('../controllers/middleware');
 var exec = require('child_process').exec;
 var hostCheckProcess = null;
 var slaveCheckProcess = null;
+var masterCheckProcess = null;
 
 var queue = []; //host information
 
@@ -23,7 +24,20 @@ exports.connect = function(app) {
 }
 
 exports.runMasterChecker = function() {
+	masterCheckProcess = exec('node ./controllers/masterChecker.js');
 
+	masterCheckProcess.stdout.on('data', function(data) {
+    		//respond to ping
+    		console.log(data);
+	});
+
+	masterCheckProcess.stderr.on('data', function(data) {
+    		console.log('[parent] masterChecker has errors :' + data);
+	});
+
+	masterCheckProcess.on('close', function(code) {
+		console.log('[parent] masterChecker process quit: ' + code);
+	});
 
 
 }
