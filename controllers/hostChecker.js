@@ -24,7 +24,7 @@ var queue = [];
 		});
 
 		client.on('error', function() {
-			console.log('err');
+			//console.log('err');
 		});
 
 		queue.push(client);
