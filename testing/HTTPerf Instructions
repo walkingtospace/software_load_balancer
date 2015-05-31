@@ -1,0 +1,28 @@
+RUN WITH A SINGLE URL
+===================================================
+httperf --server serverAddress --port 3000 --uri /memory --num-conn 20 --rate 4
+
+--server is the server that you want to connect to, e.g. google.com, 172.31.3.2, etc. 
+	Default is localhost
+--port is the port you want to use
+	Default is 80
+--uri is the url you want to access
+	Default is /
+--num-conn specifies the number of requests you want to send
+	Default is 1
+--rate is the number of requests per seconds
+	Default is 1
+
+
+RUN WITH A LIST OF URLS
+===================================================
+Before running httperf, do
+	tr "\n" "\0" < urls.log > wlog.log
+The urls.log file include the urls that httperf will visit, seperated by newlines. The order in the file is the order in which httperf will generate requests and it will loop through it (if there is a Y after --wlog, otherwise it will just run through it once)
+
+Then you can run httperf with:
+httperf --server serverAddress --port 3000 --num-conn 20 --rate 4 --wlog Y,wlog.log
+
+
+
+
