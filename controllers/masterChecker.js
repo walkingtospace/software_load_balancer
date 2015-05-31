@@ -12,7 +12,7 @@ var masterConnection = null;
 		var innerport = slaves.slaves[i].innerport;
 		
 		var client = net.connect(innerport, IP, function(data) { //'connect' listener
-			console.log('A master has been connected');
+			console.log('A master has been connected : ' + this.remoteAddress);
 
 			setInterval(writeTo, constant.SERVER.TIME_FOR_SLAVE);
 		});
@@ -20,10 +20,8 @@ var masterConnection = null;
 		client.on('data', function(data) {
 			if(data.toString() === constant.SERVER.MASTER) {
 				masterConnection = this;
-				console.log("Found master : "  + masterConnection);
+				console.log("Found master address : " + masterConnection.remoteAddress);
 			}
-			
-			console.log(data.toString());
 		});
 
 		client.on('end', function() {
@@ -35,8 +33,6 @@ var masterConnection = null;
 		client.on('error', function() {
 			//console.log('err');
 		});
-
-		
 	}
 })();
 

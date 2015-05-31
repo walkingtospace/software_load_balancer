@@ -8,6 +8,10 @@ var routes = require('./routes');
 var constant = require('./configs/constants.json');
 var app = express();
 
+if(process.env.type === undefined) {
+	process.env.type = constant.SERVER.SLAVE;
+}
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

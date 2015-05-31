@@ -10,17 +10,17 @@ var queue = [];
 		var IP = hosts.hosts[i].IP;
 		var healthport = hosts.hosts[i].healthport;
 		var client = net.connect(healthport, IP, function(data) { //'connect' listener
-			console.log('A host has been connected');
+			console.log(this.remoteAddress + ' host has been connected');
 
 			setTimeout(writeTo, constant.SERVER.TIMEFORHOST);
 		});
 			
 		client.on('data', function(data) {
-			console.log(data.toString());
+			console.log('From ' + this.remoteAddress + " : " + data.toString());
 		});
 
 		client.on('end', function() {
-			console.log('Disconnected');
+			console.log(this.remoteAddress + ' disconnected');
 		});
 
 		client.on('error', function() {

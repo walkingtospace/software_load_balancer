@@ -7,7 +7,7 @@ var constant = require("../configs/constants.json");
 		
 		socket.on('data', function(data){
 			console.log("Receive ping : " +  data);
-			socket.write("master"); 
+			socket.write(constant.SERVER.MASTER); 
 		});
 		
 	}).listen(constant.SERVER.INNERPORT);

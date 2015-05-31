@@ -27,8 +27,7 @@ exports.runMasterChecker = function() {
 	masterCheckProcess = exec('node ./controllers/masterChecker.js');
 
 	masterCheckProcess.stdout.on('data', function(data) {
-    		//respond to ping
-    		console.log(data);
+    		console.log(data); //respond to ping
 	});
 
 	masterCheckProcess.stderr.on('data', function(data) {
