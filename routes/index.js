@@ -4,7 +4,9 @@ var hostsize = hosts.hosts.length;
 var hostcount = 0;
 var middleware = require('../controllers/middleware');
 var exec = require('child_process').exec;
-var childProcess = null;
+var hostCheckProcess = null;
+var slaveCheckProcess = null;
+
 var queue = []; //host information
 
 exports.connect = function(app) {
@@ -12,26 +14,47 @@ exports.connect = function(app) {
 	app.get('/route/roundrobin', roundrobin); //basic
 	app.get('/route/resourcebase/:type', resourcebase); //CPU,MEMORY-based scheduling
 
-	runChild();
+	if(process.env.type === "master") {
+		this.runHostChecker();
+		//this.runSlaveChecker();		
+	} 
 }
 
-function runChild() { //for health check of hosts
-	childProcess = exec('node ./controllers/hostChecker.js');
+exports.runSlaveChecker = function() {
+	slaveCheckProcess = exec('node ./controllers/slaveChecker.js');
+
+	slaveCheckProcess.stdout.on('data', function(data) {
+    		//respond to ping
+
+	});
+
+	slaveCheckProcess.stderr.on('data', function(data) {
+    		console.log('[parent] slaveChecker has errors :' + data);
+	});
+
+	slaveCheckProcess.on('close', function(code) {
+		console.log('[parent] slaveChecker process quit: ' + code);
+	});
+
+}
+
+exports.runHostChecker = function() { //To get resource information of hosts
+	hostCheckProcess = exec('node ./controllers/hostChecker.js');
 	
-	childProcess.stdout.on('data', function(data) {
+	hostCheckProcess.stdout.on('data', function(data) {
     		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
-	
+	//	console.log('[parent] '+data);
 		if(data.indexOf('connect') != -1) {
-			console.log(data);
+			console.log(data); 
 		} else {
 			try {
 				var json = JSON.parse(data);
-				if(queue[json.ip] != undefined) {
-					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
 
-				//	console.log(Object.keys(queue).length+",");
+				if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
+					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
+					//update slaves with queue info
 				} else {
-					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
+					console.log("json parsing error");
 				}
 			} catch (e) {
 				//console.log("json format error"); 
@@ -39,12 +62,12 @@ function runChild() { //for health check of hosts
 		}
 	});
 
-	childProcess.stderr.on('data', function(data) {
-    		console.log('[parent] Child has errors :' + data);
+	hostCheckProcess.stderr.on('data', function(data) {
+    		console.log('[parent] hostChecker has errors :' + data);
 	});
 
-	childProcess.on('close', function(code) {
-		console.log('[parent] Child process quit: ' + code);
+	hostCheckProcess.on('close', function(code) {
+		console.log('[parent] hostChecker process quit: ' + code);
 	});
 }
 
@@ -76,7 +99,7 @@ function resourcebase(req, res, next) {
 		
 		middleware.redirector(nextHost.IP, nextHost.port, res, send, nextHost);
 	} else {
-		console.log("No resources");
+		console.log("No available resources");
 
 		res.status(200).send("No available resources");
 	}
@@ -87,7 +110,7 @@ function getPriority(type) {
 	var temp;
 	
 	if(type === constant.SERVER.CPU) {
-		temp = {"cpu": constant.HOST.THRESHOLD};
+		temp = {"cpu": constant.HOST.CPU_THRESHOLD};
 
 		for(var i in queue) {
 			if(temp.cpu > parseInt(queue[i].cpu)) {	
@@ -96,7 +119,7 @@ function getPriority(type) {
 			}
 		}	
 	} else if(type === constant.SERVER.MEM) {
-		temp = {"mem": constant.HOST.THRESHOLD};
+		temp = {"mem": constant.HOST.MEM_THRESHOLD};
 
 		for(var i in queue) {
 			if(temp.mem > parseInt(queue[i].mem)) {	
@@ -106,15 +129,15 @@ function getPriority(type) {
 		}
 	}
 
-	if(temp.cpu !== undefined && temp.cpu >= constant.HOST.THRESHOLD) {
+	if(temp.cpu !== undefined && temp.cpu >= constant.HOST.CPU_THRESHOLD) {
 	
 		return constant.SERVER.NO_CPU_RESOURCE;
-	} else if(temp.mem !== undefined && temp.mem >= constant.HOST.THERESHOLD) {
+	} else if(temp.mem !== undefined && temp.mem >= constant.HOST.MEM_THERESHOLD) {
 	
 		return constant.SERVER.NO_MEM_RESOURCE;
 	}
 
-	for(var i=0; i<hostsize ; ++i) {
+	for(var i=0; i<hostsize ; ++i) { //the lowest-resource-usage-first-served
 		if(hosts.hosts[i].IP == IP) {
 
 			return {"IP" : IP, "port" : hosts.hosts[i].port, "status" : temp};

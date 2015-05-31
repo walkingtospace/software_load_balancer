@@ -1,6 +1,7 @@
 {
 	"SERVER" : {
 		"PORT" : 3000,
+		"INNERPORT" : 3001,
 		"NO_RESOURCE" : "NO_RESOURCE",
 		"TIMEFORHOST" : 2000,
 		"CPU" : "CPU",
@@ -14,7 +15,8 @@
 	"HOST" : {
 		"PORT" : 40000,	
 		"POLLING_INTERVAL" : 5000,
-		"THRESHOLD" : 60
+		"CPU_THRESHOLD" : 70,
+		"MEM_THRESHOLD" : 80
 	},
 
 	"CLIENT" : {
