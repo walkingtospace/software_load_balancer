@@ -27,11 +27,11 @@ exports.runMasterChecker = function() {
 		masterCheckProcess = fork('./controllers/masterChecker.js');
 
 		masterCheckProcess.on('message', function(data) {
-			console.log(data.toString());
+			console.log( '[parent] Get resource info : '+ data.toString());
 		});
 
 		masterCheckProcess.on('error', function(data) {
-	    		console.log('[parent] masterChecker has errors :' + data);
+	    		console.log('[parent] masterChecker has errors : ' + data);
 		});
 
 		masterCheckProcess.on('exit', function(data) {

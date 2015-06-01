@@ -22,9 +22,9 @@ var masterConnection = null;
 				masterConnection = this;
 				console.log("[masterChecker] Found master address : " + masterConnection.remoteAddress);
 			} else { //resource info
-				console.log("[masterChecker] Get resource info : " + data);
+				//console.log("[masterChecker] Get resource info : " + data);
 
-				process.send(data); //format: string
+				process.send(data.toString()); //format: string
 			}
 		});
 
