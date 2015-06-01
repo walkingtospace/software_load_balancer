@@ -12,8 +12,8 @@ var queue = []; //host information
 
 exports.connect = function(app) {
 	app.get('/', index); 
-	app.get('/route/roundrobin', roundrobin); //basic
-	app.get('/route/resourcebase/:type', resourcebase); //CPU,MEMORY-based scheduling
+	app.get('/route/roundrobin*', roundrobin); //basic
+	app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
 
 	if(process.env.type === constant.SERVER.MASTER) {	
 		this.runHostChecker(); //client
@@ -109,8 +109,9 @@ function roundrobin(req, res, next) {
 	}	
 
 	//redirect requests to host
+	var reqURL = req.url.substr(17); // remove /route/roundrobin from url
 	console.log("[roundrobin] Redirect traffic to : " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port); 
-	middleware.redirector(hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, res, send);
+	middleware.redirector(hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, reqURL, res, send);
 }
 
 function resourcebase(req, res, next) {
@@ -122,8 +123,8 @@ function resourcebase(req, res, next) {
 		res.status(200).send("Redirection failed");
 	} else if(nextHost.IP !== undefined && nextHost.port !== undefined){
 		console.log("[CPU/MEM] Redirect traffic to : " + nextHost.IP + " port:" + nextHost.port); 
-		
-		middleware.redirector(nextHost.IP, nextHost.port, res, send, nextHost);
+		var reqURL = req.url.substr(23); // remove /route/roundrobin from url
+		middleware.redirector(nextHost.IP, nextHost.port, reqURL, res, send, nextHost);
 	} else {
 		console.log("No available resources");
 
