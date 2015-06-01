@@ -1,30 +1,32 @@
 # Meercat
 
 **Meercat** is a software L7 load balancer for data center to expressively perform request
-routing / load balancing in Node.JS.  Meercat is implemented to proof the assumption that the overall performance of a network would be faster than before if a LB can loadbalance traffic by depending on CPU/Memory usage of its hosts.
+routing / load balancing in Node.JS.  Meercat is implemented to proof the research assumption that the overall performance of a network would be improved if a load balancer can distribute traffic upon CPU/Memory resource of hosts.
 
 ##Directory Structure
 - Directory naming and structure follow the MVC pattern 
-- Initiating file : runs.js at root (do "node run")
+- Initiating file : runs.js at root ("sudo node run")
 
 ## Features
-- A Meercat communicate with all other n-1 Meercats to distribute traffic efficiently  
-- Leverages the well-tested `node-http-proxy`.
-- Simplicity of Express.
-- Compatible with connect middleware (eg: qs parser, cookie decoder).
-- Middleware makes sticky/session load balancing trivial to write.
+- Loadbalancing: A Meercat communicate with all other n-1 Meercats to distribute traffic efficiently
+- Hierachy : A meercat system consists of one master and multi slaves which are connected to each other. 
+- Failover : A meercat system takes advantages of multi loadbalancer system. When a master fails (power-off or error) while on running, one of the other slaves automatically takes over the role. 
+- Routing : A meercat supports two routing algorithms; Round-Robin and CPU/MEM-usage-based routing. 
+- A master checks all CPU/MEM resource usage of hosts and propagates to slaves. 
+- All slaves ping to the master every seconds; if no response, the next slave becomes a master.
 
-## Round Robin load balancing test
-- Two hosts are on running AWS instances by 'forever' (https://www.npmjs.com/package/forever).
-- Dummy host1 address: http://52.8.15.202:3000/
-- Dummy host2 address: http://52.8.72.3:3000/
+## Round-Robin algorithm test
+- Running dummy hosts ("sudo node /client/webserver.js").
+- Running two resource-check processes on those hosts ("sudo node /client/sysinfo.js")
+- Dummy host is accessible from outside via port 3000 (http://xxx.xxx.xxx.xxx:3000/)
 - Roundrobin load balancing request : 1) download Meercat, 2) install node.js, 3) "npm install" 4) "node run" 5) enter "http://xxx.xxx.xxx.xxx[rootaddress]/route/roundrobin" into url, then it shows the load balancing results by the round robin
 
-## CPU/MEM usage based load balancing test
-- CPU usage-based load balancing request : "http://xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/CPU" into url, then it shows the load balancing results by hosts' CPU usage
-- MEM usage-based load balancing request : "http://xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/MEM" into url, then it shows the load balancing results by hosts' MEM usage
+## CPU/MEM-usage-based algorithm test
+- Running dummy hosts, resource-check processes and meercats as mentioned above (Round-Roubin algorithm test 1~4)
+- CPU usage-based redirection request : "http://xxx.xxx.xxx.xxx/route/resourcebase/CPU" into url, then it shows the load balancing results by hosts' CPU usage
+- MEM usage-based redirection request : "http://xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/MEM" into url, then it shows the load balancing results by hosts' MEM usage
 
-
+## Performance Measurement
 
 ## License 
 
