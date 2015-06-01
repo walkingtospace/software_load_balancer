@@ -89,7 +89,9 @@ exports.runHostChecker = function() { //To get resource information of hosts
 
 						if(slaveCheckProcess != null) { 	//update slaves with host resource info
 							for(var i in queue) {  //[refactoring needed] can be faster if it can be sent as array, not a object
-								slaveCheckProcess.send(queue[i]);
+								var obj = {"ip" : i , "cpu" : queue[i].cpu, "mem" : queue[i].mem};
+
+								slaveCheckProcess.send(obj);
 							}	
 						}
 					} else {

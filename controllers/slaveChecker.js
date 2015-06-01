@@ -32,7 +32,9 @@ process.on('message', function(m) {
 
 
 function sendInitResource(socket) {
-	for(var json in resourceBuffer) {
-		socket.write(JSON.stringify(resourceBuffer[json], null, 2));
+	for(var key in resourceBuffer) {
+		var obj = { "ip" : key, "cpu" : resourceBuffer[key].cpu, "mem" : resourceBuffer[key].mem};
+
+		socket.write(JSON.stringify(obj, null, 2));
 	}
 }
