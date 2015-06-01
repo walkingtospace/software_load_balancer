@@ -1,5 +1,3 @@
-
-
 // Include the cluster module
 var cluster = require('cluster');
 
@@ -69,7 +67,7 @@ if (cluster.isMaster) {
     });
 
     // Bind to a port
-    var port = constant.SERVER.PORT;
+    var port = constant.CLIENT.PORT;
     app.listen(port);
     console.log('Worker ' + id + ' running on port ' +  port + ' !');
 }
