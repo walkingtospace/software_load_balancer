@@ -26,7 +26,9 @@ var masterConnection = null;
 			
 				var array = data.toString().split("|");
 				for(var key in array) {
-					process.send(array[key].toString()); //format: string
+					if(array[key].length > 0) {
+						process.send(array[key].toString()); //format: string
+					}
 				}
 			}
 		});
