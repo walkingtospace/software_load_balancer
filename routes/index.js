@@ -27,7 +27,22 @@ exports.runMasterChecker = function() {
 		masterCheckProcess = fork('./controllers/masterChecker.js');
 
 		masterCheckProcess.on('message', function(data) {
-			console.log( '[parent] Get resource info : '+ data.toString());
+			data = data.toString();
+			console.log( '[parent] Get resource info : '+ data);
+
+			if(typeof(data) === "string") {
+				try {
+					var json = JSON.parse(data);
+
+					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
+						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
+					} else {
+						console.log("[parent] json parsing error");
+					}
+				} catch (e) {
+					console.log("[parent] json format error"); 
+				}	
+			}
 		});
 
 		masterCheckProcess.on('error', function(data) {

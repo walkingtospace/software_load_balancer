@@ -1,35 +1,38 @@
 var net = require('net');
 var constant = require("../configs/constants.json");
 var queue = [];
+var resourceBuffer = [];
 
 (function() {
 	console.log('[slaveChecker] Slave Listener is listening at port %s', constant.SERVER.INNERPORT);
 	var server = net.createServer(function(socket) {
 		socket.on('data', function(data){
-			console.log("[slaveChecker] Receive ping : " +  data);
+			//console.log("[slaveChecker] Receive ping : " +  data);
 
-			socket.write(constant.SERVER.MASTER); 
+			socket.write(constant.SERVER.MASTER); //ping-pong
 		});
+	}).listen(constant.SERVER.INNERPORT);
+
+	server.on('connection', function(socket) {
+		console.log("[slaveChecker] connected : " + socket.remoteAddress);
 
 		queue.push(socket);
-		
-	}).listen(constant.SERVER.INNERPORT);
+		sendInitResource(socket);
+	});
+
 })();
 
 process.on('message', function(m) {
-	test = m;
-	setTimeout(write, 7000);
-	/*
 	for(var i in queue) {
 		queue[i].write(JSON.stringify(m, null, 2));
-	}*/
+	}
+
+	resourceBuffer[m.ip] = m; //for sendIntiResource
 });
 
-var test;
 
-function write() {
-	for(var i in queue) {
-		console.log("call: " + JSON.stringify(test, null, 2));
-		queue[i].write(JSON.stringify(test, null, 2));
+function sendInitResource(socket) {
+	for(var json in resourceBuffer) {
+		socket.write(JSON.stringify(resourceBuffer[json], null, 2));
 	}
 }
