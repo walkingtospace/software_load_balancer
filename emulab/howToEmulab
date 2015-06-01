@@ -2,6 +2,7 @@ Website:
 	marmot.pdl.cmu.edu
 
 To create an experiment:
+	Before starting an experiment, login to the ops node and do a git pull to get the newest code
 	Go to "Begin Experiement"
 	Enter name and description
 	Either use an already created NS file (network description file) or use the GUI editor to create a new one

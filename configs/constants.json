@@ -19,5 +19,12 @@
 		"POLLING_INTERVAL" : 5000,
 		"CPU_THRESHOLD" : 70,
 		"MEM_THRESHOLD" : 80
-	}
+	},
+
+	"CLIENT" : {
+		"PORT" : 3000,
+		"FIBNUM" : 40,
+		"MATRIXSIZE" : 10000,
+		"MEMORYDELAY" : 2000
+ 	}
 }
