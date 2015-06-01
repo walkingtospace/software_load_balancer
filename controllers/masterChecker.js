@@ -12,20 +12,31 @@ var masterConnection = null;
 		var innerport = slaves.slaves[i].innerport;
 		
 		var client = net.connect(innerport, IP, function(data) { //'connect' listener
-			console.log('A master has been connected : ' + this.remoteAddress);
+			console.log('[masterChecker] A master has been connected : ' + this.remoteAddress);
 
 			setInterval(writeTo, constant.SERVER.TIME_FOR_SLAVE);
 		});
 			
 		client.on('data', function(data) {
-			if(data.toString() === constant.SERVER.MASTER) {
+			if(data.toString() === constant.SERVER.MASTER) { //alive ping
 				masterConnection = this;
-				console.log("Found master address : " + masterConnection.remoteAddress);
+				console.log("[masterChecker] Found master address : " + masterConnection.remoteAddress);
+			} else { //resource info
+				//console.log("[masterChecker] Get resource info : " + data);
+			
+				var array = data.toString().split("|");
+				for(var key in array) {
+					if(array[key].length > 0) {
+						process.send(array[key].toString()); //format: string
+					}
+				}
 			}
 		});
 
 		client.on('end', function() {
-			console.log('Disconnected');
+			console.log("[masterChecker] We've lost our master");
+			
+			process.exit(); //for re-execution
 		});
 
 		queue.push(client);
