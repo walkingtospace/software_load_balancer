@@ -27,7 +27,7 @@ exports.runMasterChecker = function() {
 		masterCheckProcess = fork('./controllers/masterChecker.js');
 
 		masterCheckProcess.on('message', function(data) {
-			console.log(data);
+			console.log(data.toString());
 		});
 
 		masterCheckProcess.on('error', function(data) {
