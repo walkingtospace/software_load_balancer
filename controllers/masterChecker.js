@@ -23,8 +23,11 @@ var masterConnection = null;
 				console.log("[masterChecker] Found master address : " + masterConnection.remoteAddress);
 			} else { //resource info
 				//console.log("[masterChecker] Get resource info : " + data);
-
-				process.send(data.toString()); //format: string
+			
+				var array = data.split("|");
+				for(var key in array) {
+					process.send(array[key].toString()); //format: string
+				}
 			}
 		});
 

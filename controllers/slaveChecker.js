@@ -33,8 +33,9 @@ process.on('message', function(m) {
 
 function sendInitResource(socket) {
 	for(var key in resourceBuffer) {
-		var obj = { "ip" : key, "cpu" : resourceBuffer[key].cpu, "mem" : resourceBuffer[key].mem};
+		var obj = { "ip" : key, "cpu" : resourceBuffer[key].cpu, "mem" : resourceBuffer[key].mem };
 
-		socket.write(JSON.stringify(obj, null, 2));
+		socket.write(JSON.stringify(obj, null, 2)); //for sync with slave(masterchecker.js on('data'));
+		socket.write("|");
 	}
 }

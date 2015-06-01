@@ -88,11 +88,10 @@ exports.runHostChecker = function() { //To get resource information of hosts
 						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
 
 						if(slaveCheckProcess != null) { 	//update slaves with host resource info
-							for(var i in queue) {  //[refactoring needed] can be faster if it can be sent as array, not a object
-								var obj = {"ip" : i , "cpu" : queue[i].cpu, "mem" : queue[i].mem};
+							var obj = {"ip" : json.ip , "cpu" : json.cpu, "mem" : json.mem};
 
-								slaveCheckProcess.send(obj);
-							}	
+							slaveCheckProcess.send(obj);
+								
 						}
 					} else {
 						console.log("[parent] json parsing error");
