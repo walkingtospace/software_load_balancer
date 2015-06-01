@@ -24,7 +24,7 @@ var masterConnection = null;
 			} else { //resource info
 				//console.log("[masterChecker] Get resource info : " + data);
 			
-				var array = data.split("|");
+				var array = data.toString().split("|");
 				for(var key in array) {
 					process.send(array[key].toString()); //format: string
 				}
