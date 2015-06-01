@@ -1,7 +1,8 @@
 var request = require("request");
 
-exports.redirector = function(IP, port, res, callback, info) {
-	request('http://' + IP + ':' + port , function(error, response, body) {
+exports.redirector = function(IP, port, url, res, callback, info) {
+	console.log(url);
+	request('http://' + IP + ':' + port + url , function(error, response, body) {
 		if(!error && response.statusCode == 200) {
 			
 			callback(res, response, info);
