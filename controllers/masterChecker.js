@@ -34,7 +34,9 @@ var masterConnection = null;
 		});
 
 		client.on('end', function() {
-			console.log('Disconnected');
+			console.log("[masterChecker] We've lost our master");
+			
+			process.exit(); //for re-execution
 		});
 
 		queue.push(client);
