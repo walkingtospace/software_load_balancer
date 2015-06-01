@@ -10,17 +10,19 @@ var queue = [];
 		var IP = hosts.hosts[i].IP;
 		var healthport = hosts.hosts[i].healthport;
 		var client = net.connect(healthport, IP, function(data) { //'connect' listener
-			console.log(this.remoteAddress + ' host has been connected');
+			console.log('[hostChecker] ' + this.remoteAddress + ' host has been connected');
 
 			setTimeout(writeTo, constant.SERVER.TIMEFORHOST); //for synchronization with queue.push()
 		});
 			
 		client.on('data', function(data) {
-			console.log('From ' + this.remoteAddress + " : " + data.toString());
+			console.log('[hostChecker] ' + 'From ' + this.remoteAddress + " : " + data.toString());
+
+			process.send(data.toString());
 		});
 
 		client.on('end', function() {
-			console.log(this.remoteAddress + ' disconnected');
+			console.log('[hostChecker] ' + this.remoteAddress + ' disconnected');
 		});
 
 		client.on('error', function() {
@@ -36,4 +38,5 @@ function writeTo() {
 		queue[i].write("get\r\n");
 	}
 }
+
 

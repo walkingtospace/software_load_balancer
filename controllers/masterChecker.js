@@ -12,15 +12,17 @@ var masterConnection = null;
 		var innerport = slaves.slaves[i].innerport;
 		
 		var client = net.connect(innerport, IP, function(data) { //'connect' listener
-			console.log('A master has been connected : ' + this.remoteAddress);
+			console.log('[masterChecker] A master has been connected : ' + this.remoteAddress);
 
 			setInterval(writeTo, constant.SERVER.TIME_FOR_SLAVE);
 		});
 			
 		client.on('data', function(data) {
-			if(data.toString() === constant.SERVER.MASTER) {
+			if(data.toString() === constant.SERVER.MASTER) { //alive ping
 				masterConnection = this;
-				console.log("Found master address : " + masterConnection.remoteAddress);
+				console.log("[masterChecker] Found master address : " + masterConnection.remoteAddress);
+			} else { //resource info
+				process.send(data); //format: string
 			}
 		});
 
