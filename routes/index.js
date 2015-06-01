@@ -53,6 +53,11 @@ exports.runMasterChecker = function() {
 			console.log('[parent] masterChecker process quit: ' + data);
 			masterCheckProcess = null;
 		});
+
+		masterCheckProcess.on('close', function(data) {
+			console.log('[parent] masterChecker process close: ' + data);
+			masterCheckProcess = null;
+		});
 	}
 }
 
