@@ -16,80 +16,85 @@ exports.connect = function(app) {
 	app.get('/route/resourcebase/:type', resourcebase); //CPU,MEMORY-based scheduling
 
 	if(process.env.type === constant.SERVER.MASTER) {	
-		this.runHostChecker();
-		this.runSlaveChecker();
+		this.runHostChecker(); //client
+		this.runSlaveChecker(); //listener 
 	} else if(process.env.type === constant.SERVER.SLAVE) {
-		this.runMasterChecker();
+		setInterval(this.runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
 	}
 }
 
 exports.runMasterChecker = function() {
-	masterCheckProcess = exec('node ./controllers/masterChecker.js');
+	if(masterCheckProcess === null) {
+		masterCheckProcess = exec('node ./controllers/masterChecker.js');
 
-	masterCheckProcess.stdout.on('data', function(data) {
-    		console.log(data); //respond to ping
-	});
+		masterCheckProcess.stdout.on('data', function(data) {
+	    		console.log(data); //respond to ping
+		});
 
-	masterCheckProcess.stderr.on('data', function(data) {
-    		console.log('[parent] masterChecker has errors :' + data);
-	});
+		masterCheckProcess.stderr.on('data', function(data) {
+	    		console.log('[parent] masterChecker has errors :' + data);
+		});
 
-	masterCheckProcess.on('close', function(code) {
-		console.log('[parent] masterChecker process quit: ' + code);
-	});
-
-
+		masterCheckProcess.on('close', function(code) {
+			console.log('[parent] masterChecker process quit: ' + code);
+			masterCheckProcess = null;
+		});
+	}
 }
 
-exports.runSlaveChecker = function() {
-	slaveCheckProcess = exec('node ./controllers/slaveChecker.js');
+exports.runSlaveChecker = function() { 
+	if(slaveCheckProcess === null) {
+		slaveCheckProcess = exec('node ./controllers/slaveChecker.js');
 
-	slaveCheckProcess.stdout.on('data', function(data) {
-    		//respond to ping
-    		console.log(data);
-	});
+		slaveCheckProcess.stdout.on('data', function(data) {
+	    		console.log(data); //respond to ping
+		});
 
-	slaveCheckProcess.stderr.on('data', function(data) {
-    		console.log('[parent] slaveChecker has errors :' + data);
-	});
+		slaveCheckProcess.stderr.on('data', function(data) {
+	    		console.log('[parent] slaveChecker has errors :' + data);
+		});
 
-	slaveCheckProcess.on('close', function(code) {
-		console.log('[parent] slaveChecker process quit: ' + code);
-	});
-
+		slaveCheckProcess.on('close', function(code) {
+			console.log('[parent] slaveChecker process quit: ' + code);
+			slaveCheckProcess = null;
+		});
+	}
 }
 
 exports.runHostChecker = function() { //To get resource information of hosts
-	hostCheckProcess = exec('node ./controllers/hostChecker.js');
-	
-	hostCheckProcess.stdout.on('data', function(data) {
-    		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
-		console.log('[parent] '+data);
-		if(data.indexOf('connect') != -1) {
-			console.log(data); 
-		} else {
-			try {
-				var json = JSON.parse(data);
+	if(hostCheckProcess === null) {
+		hostCheckProcess = exec('node ./controllers/hostChecker.js');
+		
+		hostCheckProcess.stdout.on('data', function(data) {
+	    		data = data.replace(/(\r\n|\n|\r)/gm,""); //remove all linebreaks
+			console.log('[parent] '+data);
+			if(data.indexOf('connect') != -1) {
+				console.log(data); 
+			} else {
+				try {
+					var json = JSON.parse(data);
 
-				if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
-					queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
-					//update slaves with queue info
-				} else {
-					console.log("json parsing error");
-				}
-			} catch (e) {
-				//console.log("json format error"); 
-			}	
-		}
-	});
+					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
+						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
+						//update slaves with queue info
+					} else {
+						console.log("json parsing error");
+					}
+				} catch (e) {
+					//console.log("json format error"); 
+				}	
+			}
+		});
 
-	hostCheckProcess.stderr.on('data', function(data) {
-    		console.log('[parent] hostChecker has errors :' + data);
-	});
+		hostCheckProcess.stderr.on('data', function(data) {
+	    		console.log('[parent] hostChecker has errors :' + data);
+		});
 
-	hostCheckProcess.on('close', function(code) {
-		console.log('[parent] hostChecker process quit: ' + code);
-	});
+		hostCheckProcess.on('close', function(code) {
+			console.log('[parent] hostChecker process quit: ' + code);
+			hostCheckProcess = null;
+		});
+	}
 }
 
 function index(req, res, next) {

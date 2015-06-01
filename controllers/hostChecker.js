@@ -12,7 +12,7 @@ var queue = [];
 		var client = net.connect(healthport, IP, function(data) { //'connect' listener
 			console.log(this.remoteAddress + ' host has been connected');
 
-			setTimeout(writeTo, constant.SERVER.TIMEFORHOST);
+			setTimeout(writeTo, constant.SERVER.TIMEFORHOST); //for synchronization with queue.push()
 		});
 			
 		client.on('data', function(data) {
