@@ -22,6 +22,8 @@ var masterConnection = null;
 				masterConnection = this;
 				console.log("[masterChecker] Found master address : " + masterConnection.remoteAddress);
 			} else { //resource info
+				console.log("[masterChecker] Get resource inf : " + data);
+				
 				process.send(data); //format: string
 			}
 		});
