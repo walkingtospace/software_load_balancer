@@ -44,6 +44,8 @@ exports.runMasterChecker = function() {
 						var json = JSON.parse(data);
 
 						masterIP = json.ip;
+
+						console.log("master ip: " + json.ip);
 					}
 					//store host resource info
 					var json = JSON.parse(data);
@@ -73,8 +75,8 @@ exports.runMasterChecker = function() {
 
 				//run slavechecker
 				process.env.type = constant.SERVER.MASTER;
-				this.runHostChecker(); //client
-				this.runSlaveChecker(); //listener 
+				runHostChecker(); //client
+				runSlaveChecker(); //listener 
 
 				//broadcast : "I am a master"
 				var msg = "I'm a master";
