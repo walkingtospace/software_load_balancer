@@ -3,13 +3,13 @@ var fs = require('fs');
 var hostagents = require('../configs/hostagent.json');
 var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
-var rate = 50; // requests per second
+var rate = 100; // requests per second
 var timeout = 10; //in seconds
 // var httperf = "httperf --server" + hostagent.hostagent.IP + " --port " + hostagent.hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 var grep = " | grep 'Total'";
 var result = "Number of requsts,Time,Min,Max,Avg,Median,Std. Dev.\n";
 for (i = 1; i <= 10; i++){
-	numConn = i * 50;
+	numConn = i * rate;
 	var httperf = "httperf --server thalley.com --num-conn " + numConn + " --rate 50";
 	// var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 	console.log(httperf);
