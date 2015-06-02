@@ -1,6 +1,5 @@
 var net = require('net');
 var constant = require("../configs/constants.json");
-var client = new net.Socket();
 var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var queue = []; 

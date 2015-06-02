@@ -3,10 +3,16 @@ var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var hostcount = 0;
 var middleware = require('../controllers/middleware');
+var failoverManager = require('../controllers/failoverManager');
+var masterIP = null;
+var myIP = null;
+
+var ip = require('ip'); //local IP
 var fork = require('child_process').fork;
 var hostCheckProcess = null;
 var slaveCheckProcess = null;
 var masterCheckProcess = null;
+var intervalId = null;
 var queue = []; //host information
 
 exports.connect = function(app) {
@@ -14,31 +20,35 @@ exports.connect = function(app) {
 	app.get('/route/roundrobin*', roundrobin); //basic
 	app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
 
+	myIP = ip.address();
+
 	if(process.env.type === constant.SERVER.MASTER) {	
-		this.runHostChecker(); //client
-		this.runSlaveChecker(); //listener 
+		runHostChecker(); //client
+		runSlaveChecker(); //listener 
 	} else if(process.env.type === constant.SERVER.SLAVE) {
-		setInterval(this.runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
+		intervalId = setInterval(runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
 	}
 }
 
-exports.runMasterChecker = function() {
+function runMasterChecker() {
 	if(masterCheckProcess === null) {
 		masterCheckProcess = fork('./controllers/masterChecker.js');
 
 		masterCheckProcess.on('message', function(data) {
 			data = data.toString();
-			console.log( '[parent] Get resource info : '+ data);
+			//console.log( '[parent] Get resource info : '+ data);
 
 			if(typeof(data) === "string") {
 				try {
 					var json = JSON.parse(data);
 
-					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
-						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
-					} else {
-						console.log("[parent] json parsing error");
+					if(json.master != undefined) {
+						masterIP = json.ip;
 					}
+					
+					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) { //store host resource info
+						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
+					} 
 				} catch (e) {
 					console.log("[parent] json format error"); 
 				}	
@@ -49,19 +59,34 @@ exports.runMasterChecker = function() {
 	    		console.log('[parent] masterChecker has errors : ' + data);
 		});
 
+		 //assumption : there is the only case masterCheckerProcess is quit-> lost master
 		masterCheckProcess.on('exit', function(data) {
 			console.log('[parent] masterChecker process quit: ' + data);
 			masterCheckProcess = null;
-		});
 
+			if(failoverManager.nextMaster(masterIP, myIP) === true) {
+				clearInterval(intervalId); //quit masterchecker
+
+				//run slavechecker
+				process.env.type = constant.SERVER.MASTER;
+				runHostChecker(); //client
+				runSlaveChecker(); //listener 
+
+				//broadcast : "I am a master"
+				var msg = "I'm a master";
+				failoverManager.broadcastToSlaves(msg);
+			} 
+		});
+/*
 		masterCheckProcess.on('close', function(data) {
 			console.log('[parent] masterChecker process close: ' + data);
 			masterCheckProcess = null;
 		});
+*/
 	}
 }
 
-exports.runSlaveChecker = function() { 
+function runSlaveChecker() { 
 	if(slaveCheckProcess === null) {
 		slaveCheckProcess = fork('./controllers/slaveChecker.js');
 
@@ -80,7 +105,7 @@ exports.runSlaveChecker = function() {
 	}
 }
 
-exports.runHostChecker = function() { //To get resource information of hosts
+function runHostChecker() { //To get resource information of hosts
 	if(hostCheckProcess === null) {
 		hostCheckProcess = fork('./controllers/hostChecker.js');
 
