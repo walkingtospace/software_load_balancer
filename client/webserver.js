@@ -8,8 +8,11 @@ app.get('/', function (req, res) {
     res.send('Hello from server');
 });
 
+
+//CPU heavy task
 app.get('/compute', function (req, res) {
     console.log("Doing computation on server");
+    //Spawn thread to do computation
     var worker = new Worker(function(){
         function fibonacci(n) {
             if (n < 2)
@@ -18,7 +21,6 @@ app.get('/compute', function (req, res) {
                 return fibonacci(n-2) + fibonacci(n-1);
         }
         this.onmessage = function (event) {
-          
           postMessage(fibonacci(event.data));
         }
     });
@@ -29,15 +31,8 @@ app.get('/compute', function (req, res) {
     worker.postMessage(constant.CLIENT.FIBNUM);
 });
 
-function makeMatrix(n) {
-    var matrix = [];
-    for(var i=0; i<n; i++) {
-        matrix[i] = new Array(n);
-    }
-    return matrix;
-}
-
-// Makes an empty array to use up memory and keeps it in memory for a given amount of milliseconds
+// Memory heavy task
+// Makes an empty array to use up memory
 app.get('/memory', function (req, res) {
     console.log("Make matrix on server");
     var worker = new Worker(function(){
@@ -54,8 +49,6 @@ app.get('/memory', function (req, res) {
         }
     });
     worker.onmessage = function (event) {
-        mat = [];
-        global.gc();
         res.send("done");
         console.log("Matrix done on server");
     };
