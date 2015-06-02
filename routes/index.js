@@ -23,14 +23,14 @@ exports.connect = function(app) {
 	myIP = ip.address();
 
 	if(process.env.type === constant.SERVER.MASTER) {	
-		this.runHostChecker(); //client
-		this.runSlaveChecker(); //listener 
+		runHostChecker(); //client
+		runSlaveChecker(); //listener 
 	} else if(process.env.type === constant.SERVER.SLAVE) {
-		intervalId = setInterval(this.runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
+		intervalId = setInterval(runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
 	}
 }
 
-exports.runMasterChecker = function() {
+function runMasterChecker() {
 	if(masterCheckProcess === null) {
 		masterCheckProcess = fork('./controllers/masterChecker.js');
 
@@ -92,7 +92,7 @@ exports.runMasterChecker = function() {
 	}
 }
 
-exports.runSlaveChecker = function() { 
+function runSlaveChecker() { 
 	if(slaveCheckProcess === null) {
 		slaveCheckProcess = fork('./controllers/slaveChecker.js');
 
@@ -111,7 +111,7 @@ exports.runSlaveChecker = function() {
 	}
 }
 
-exports.runHostChecker = function() { //To get resource information of hosts
+function runHostChecker() { //To get resource information of hosts
 	if(hostCheckProcess === null) {
 		hostCheckProcess = fork('./controllers/hostChecker.js');
 
