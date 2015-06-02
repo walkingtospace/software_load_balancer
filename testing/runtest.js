@@ -3,15 +3,16 @@ var fs = require('fs');
 var hostagents = require('../configs/hostagent.json');
 var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
-var rate = 50; // requests per second
+var increase = 50; // requests per second
 var timeout = 10; //in seconds
 // var httperf = "httperf --server" + hostagent.hostagent.IP + " --port " + hostagent.hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 var grep = " | grep 'Total'";
 var result = "Number of requsts,Time,Min,Max,Avg,Median,Std. Dev.\n";
 for (i = 1; i <= 10; i++){
-	numConn = i * rate;
+	numConn = i * increase;
 	// var httperf = "httperf --server thalley.com --num-conn " + numConn + " --rate 50";
-	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
+	//Rate is = numConn to send all requests in 1 second
+	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + numConn + " --wlog Y,wlog.log";
 	console.log(httperf);
 	var httperfRes = exec(httperf).toString();
 	// console.log(httperfRes);
@@ -34,8 +35,8 @@ for (i = 1; i <= 10; i++){
 
 // var httperfTO = "httperf --server" + hostagent.hostagent.IP + " --port " + hostagent.hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log --timeout " + timeout;
 
-
-fs.writeFile("results", result, function(err) {
+var expname = (exec("hostname").toString().split(/[.]/))[1];
+fs.writeFile(expname + "results", result, function(err) {
 	if(err) {
 		return console.log(err);
 	}
