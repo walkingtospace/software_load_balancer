@@ -24,7 +24,7 @@
 	"CLIENT" : {
 		"PORT" : 3000,
 		"FIBNUM" : 40,
-		"MATRIXSIZE" : 10000,
-		"MEMORYDELAY" : 2000
+		"MATRIXSIZE" : 40000,
+		"MEMORYDELAY" : 0
  	}
 }
