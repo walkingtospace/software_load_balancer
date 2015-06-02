@@ -1,6 +1,9 @@
 // Include the cluster module
 var cluster = require('cluster');
-
+var timeouts = [];
+function errorMsg() {
+  console.error("Something must be wrong with the connection ...");
+}
 // Code to run if we're in the master process
 if (cluster.isMaster) {
 
@@ -12,9 +15,13 @@ if (cluster.isMaster) {
         cluster.fork();
     }
 
+    cluster.on('fork', function(worker) {
+      timeouts[worker.id] = setTimeout(errorMsg, 120000);
+    });
+
     // Listen for dying workers
     cluster.on('exit', function (worker) {
-
+        clearTimeout(timeouts[worker.id]);
         // Replace the dead worker, we're not sentimental
         console.log('Worker ' + worker.id + ' died :(');
             cluster.fork();

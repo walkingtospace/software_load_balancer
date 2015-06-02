@@ -22,9 +22,9 @@
 	},
 
 	"CLIENT" : {
-		"PORT" : 3000,
+		"PORT" : 3001,
 		"FIBNUM" : 40,
-		"MATRIXSIZE" : 40000,
+		"MATRIXSIZE" : 34000,
 		"MEMORYDELAY" : 0
  	}
 }
