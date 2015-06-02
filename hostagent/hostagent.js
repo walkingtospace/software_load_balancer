@@ -2,6 +2,7 @@ var constant = require('../configs/constants.json');
 var hosts = require('../configs/slaves.json');
 var hostsize = hosts.slaves.length;
 var hostcount = 0;
+var host;
 var middleware = require('../controllers/middleware');
 var express = require('express');
 var app = express();
@@ -23,17 +24,18 @@ function roundrobin(req, res, next) {
 
   //redirect requests to host
   var reqURL = req.url;
-  console.log("[roundrobin] Redirect traffic to : " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port); 
-  middleware.redirector(hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, reqURL, res, send);
+  host = hosts.hosts[hostcount];
+  console.log("[roundrobin] Redirect traffic to : " + host.IP + " port:" + host.port); 
+  middleware.redirector(host.IP, host.port, reqURL, res, send);
 }
 
 function send(res, resFromHost, info) {
   if(resFromHost === undefined) {
-    res.status(200).send("Got error from host " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port);
+    res.status(200).send("Got error from host " + host.IP + " port:" + host.port);
 
   } else {
       var header = "Successfully received response </br>";
-      var address = "IP: "+ hosts.hosts[hostcount].IP + " PORT: " + hosts.hosts[hostcount].port + "</br>"; 
+      var address = "IP: "+ host.IP + " PORT: " + host.port + "</br>"; 
       var resStatus = "RESPONSE CODE: " + resFromHost.statusCode + "</br>";
 
       res.status(200).send(header + address+ resStatus);
