@@ -12,6 +12,7 @@ for (i = 1; i <= 10; i++){
 	numConn = i * 10;
 	// var httperf = "httperf --server thalley.com --num-conn " + numConn + " --rate 50";
 	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
+	console.log(httperf);
 	var time = (exec(httperf + grep).toString().split(/[ ]/))[8];
 	result += numConn + "," + time + "\n";
 }
