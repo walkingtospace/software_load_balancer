@@ -1,6 +1,5 @@
 var net = require('net');
 var constant = require("../configs/constants.json");
-var client = new net.Socket();
 var slaves = require('../configs/slaves.json');
 var slavesize = slaves.slaves.length;
 var queue = []; 
@@ -10,7 +9,7 @@ var masterConnection = null;
 	for(var i=0; i<slavesize ; ++i) {
 		var IP = slaves.slaves[i].IP;
 		var innerport = slaves.slaves[i].innerport;
-		
+	
 		var client = net.connect(innerport, IP, function(data) { //'connect' listener
 			console.log('[masterChecker] A master has been connected : ' + this.remoteAddress);
 
@@ -21,6 +20,10 @@ var masterConnection = null;
 			if(data.toString() === constant.SERVER.MASTER) { //alive ping
 				masterConnection = this;
 				console.log("[masterChecker] Found master address : " + masterConnection.remoteAddress);
+
+				var json = {"ip" : masterConnection.remoteAddress, "master" : true};
+
+				process.send(JSON.stringify(json, null, 2));
 			} else { //resource info
 				//console.log("[masterChecker] Get resource info : " + data);
 			
