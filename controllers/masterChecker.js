@@ -9,7 +9,7 @@ var masterConnection = null;
 	for(var i=0; i<slavesize ; ++i) {
 		var IP = slaves.slaves[i].IP;
 		var innerport = slaves.slaves[i].innerport;
-		
+	
 		var client = net.connect(innerport, IP, function(data) { //'connect' listener
 			console.log('[masterChecker] A master has been connected : ' + this.remoteAddress);
 
@@ -22,7 +22,7 @@ var masterConnection = null;
 				console.log("[masterChecker] Found master address : " + masterConnection.remoteAddress);
 
 				var json = {"ip" : masterConnection.remoteAddress, "master" : true};
-				
+
 				process.send(JSON.stringify(json, null, 2));
 			} else { //resource info
 				//console.log("[masterChecker] Get resource info : " + data);

@@ -4,7 +4,7 @@ var queue = [];
 var resourceBuffer = [];
 
 (function() {
-	console.log('[slaveChecker] Slave Listener is listening at port %s', constant.SERVER.INNERPORT);
+	console.log('[slaveChecker] SlaveChecker is listening at port %s', constant.SERVER.INNERPORT);
 	var server = net.createServer(function(socket) {
 		socket.on('data', function(data){
 			//console.log("[slaveChecker] Receive ping : " +  data);
