@@ -40,21 +40,15 @@ function runMasterChecker() {
 
 			if(typeof(data) === "string") {
 				try {
-					if(data.indexOf(constant.SERVER.MASTER) != -1) {
-						var json = JSON.parse(data);
-
-						masterIP = json.ip;
-
-						console.log("master ip: " + json.ip);
-					}
-					//store host resource info
 					var json = JSON.parse(data);
 
-					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
-						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
-					} else {
-						console.log("[parent] json parsing error");
+					if(json.master != undefined) {
+						masterIP = json.ip;
 					}
+					
+					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) { //store host resource info
+						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
+					} 
 				} catch (e) {
 					console.log("[parent] json format error"); 
 				}	
