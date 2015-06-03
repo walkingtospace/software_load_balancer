@@ -17,9 +17,9 @@ The goal is to, by having multiple load balancers, to more the system very scala
 In implementation part, We've implemented the multi load balancing system. Now we complete the implementation and we are on running several performance measurement. The features what we have implemented are:
 \begin{enumerate}
 	\item[a)] A Meercat communicate with all other n-1 Meercats to distribute traffic efficiently
-	\item[b)]  A meercat system consists of one master and multi slaves which are connected to each other.
-	\item[c)]  A meercat system takes advantages of multi loadbalancer system. When a master fails (power-off or error) while on running, one of the other slaves automatically takes over the role.
-	\item[d)] A meercat supports two routing algorithms; Round-Robin and CPU/MEM-usage-based routing. A master checks all CPU/MEM resource usage of hosts and propagates to slaves. All slaves ping to the master every seconds; if no response, the next slave becomes a master.
+	\item[b)]  A Meercat system consists of one master and multi slaves which are connected to each other.
+	\item[c)]  A Meercat system takes advantages of multi loadbalancer system. When a master fails (power-off or error) while on running, one of the other slaves automatically takes over the role.
+	\item[d)] A Meercat supports two routing algorithms; Round-Robin and CPU/MEM-usage-based routing. A master checks all CPU/MEM resource usage of hosts and propagates to slaves. All slaves ping to the master every seconds; if no response, the next slave becomes a master.
 \end{enumerate}
 
 The communication diagram between a master and slave are described in the below figure:
@@ -27,13 +27,15 @@ The communication diagram between a master and slave are described in the below 
 	\includegraphics[scale=0.5]{./comm.png}
 \end{center}
 
-The only master can listen to resource status of hosts, and can propagates these information to slaves. All slaves ping to a master in every 1 sec. If a master get power-off or down, the next slave automatically takes over the master role (failover). A meercat has three thread to handle multi channel communication as the below figure shows.
+The only master can listen to resource status of hosts, and can propagates these information to slaves. All slaves ping to a master in every 1 sec. If a master get power-off or down, the next slave automatically takes over the master role (failover). A Meercat has three thread to handle multi channel communication as the below figure shows.
 \begin{center}
 	\includegraphics[scale=0.5]{./interface.png}
 \end{center}
+
+Our current results are not shown yet as the results from our tests showed that we need to optimize/fix the way the master gets information from the hosts. As of right now, this is not happening efficiently enough and a lot requests are sent to servers before we get information about their status.
  
 \section{For Next Week}
-For next week, we will measure the performance of our meercat, and also will prove whether our initial assumption-multi load balancer system would take advantages than a single load balancer in some specific area - is correct or wrong with several metrics.
+For next week, we will improve the information gathering system and measure the performance of our Meercat. We will also prove whether our initial assumption-multi load balancer system would take advantages than a single load balancer in some specific area - is correct or wrong with several metrics. 
 
 \begin{thebibliography}{9}
   \bibitem{ananta}
