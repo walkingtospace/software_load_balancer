@@ -24,7 +24,10 @@ function roundrobin(req, res, next) {
 
   //redirect requests to host
   var reqURL = req.url;
-  host = hosts.hosts[hostcount];
+  if (hostsize == 0)
+    host = hosts.hosts[hostcount];
+  else
+    host = hosts.slaves[hostcount];
   console.log("[roundrobin] Redirect traffic to : " + host.IP + " port:" + host.port); 
   middleware.redirector(host.IP, host.port, reqURL, res, send);
 }
