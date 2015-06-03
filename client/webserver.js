@@ -1,7 +1,12 @@
 var Worker = require('webworker-threads').Worker;
 var express = require('express');
+var os = require('os');
 var app = express();
 var constant = require('../configs/constants.json');
+var OneGB = 1028*1028*1028;
+//Each element is 8 bytes; 2.71 is a magic number that somehow makes
+// sizeOfMatrix actual represent the size (found by measurement)
+var sizeOfMatrix = constant.CLIENT.MATRIXSIZE * constant.CLIENT.MATRIXSIZE * 8 * 2.71;
 
 // Add a basic route – index page
 app.get('/', function (req, res) {
@@ -33,16 +38,16 @@ app.get('/compute', function (req, res) {
 
 // Memory heavy task
 // Makes an empty array to use up memory
+var running = 0;
 app.get('/memory', function (req, res) {
-    console.log("Make matrix on server");
     var worker = new Worker(function(){
         function makeMatrix(n) {
+            console.log("Make matrix on server");
             var matrix = [];
             //Making matrix linearlized is much faster
             for(var i=0; i<n*n; i++) {
                 matrix[i] = 1;
             }
-
             //Remove matrix from memory
             matrix = [];
             global.gc();
@@ -55,8 +60,21 @@ app.get('/memory', function (req, res) {
     worker.onmessage = function (event) {
         res.send("done");
         console.log("Matrix done on server");
+        running--;
     };
-    worker.postMessage(constant.CLIENT.MATRIXSIZE);
+
+    // Limit total memory usage so that we avoid server crash
+    function checkMemory(){
+        if ((running * sizeOfMatrix) > (10 * OneGB)){
+            setTimeout(checkMemory, 2000);
+        }
+        else{
+            worker.postMessage(constant.CLIENT.MATRIXSIZE);
+            running++;
+        }
+            
+    }
+    checkMemory();
 });
 
 // Bind to a port
