@@ -6,4 +6,4 @@ node sysinfo.js &
 node --expose-gc webserver.js &
 #Wait for webserver to start before getting pid
 sleep 5
-node ../emulab/noOom.js &
+pgrep -f webserver | while read PID; do sudo echo -17 > /proc/$PID/oom_adj; done
