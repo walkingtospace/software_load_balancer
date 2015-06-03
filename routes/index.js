@@ -164,10 +164,11 @@ function roundrobin(req, res, next) {
 }
 
 function resourcebase(req, res, next) {
-	if(req.url === "/compute")
-		req.params.type = constant.SERVER.CPU;
-	else if(req.url === "/memory")
+	if(req.url === "/memory")
 		req.params.type = constant.SERVER.MEM;
+	else // use CPU for all other requests
+		req.params.type = constant.SERVER.CPU;
+
 	var nextHost = getPriority(req.params.type);	
 	console.log(queue);
 	if(nextHost === undefined) {
