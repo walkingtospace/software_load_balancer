@@ -25,6 +25,7 @@
 		"PORT" : 3000,
 		"FIBNUM" : 38,
 		"MATRIXSIZE" : 3000,
-		"MEMORYDELAY" : 0
+		"MEMORYDELAY" : 0,
+		"MAXMEMUSE" : 10
  	}
 }
