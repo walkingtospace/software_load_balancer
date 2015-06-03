@@ -18,8 +18,8 @@ if(process.argv.length < 3){
 			break;
 		}
 	}
-	else
-		path = process.argv.slice(2).toString();
+else
+	path = process.argv[2].toString();
 
 
 // Read the file as lowercase

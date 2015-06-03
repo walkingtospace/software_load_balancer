@@ -8,6 +8,8 @@ var routes = require('./routes');
 var constant = require('./configs/constants.json');
 var app = express();
 
+if(process.argv.length == 3)
+	process.env.type = process.argv[2].toString();
 if(process.env.type === undefined) {
 	process.env.type = constant.SERVER.SLAVE;
 }
