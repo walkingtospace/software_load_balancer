@@ -7,7 +7,8 @@ var increase = 50; // requests per second
 var timeout = 10; //in seconds
 // var httperf = "httperf --server" + hostagent.hostagent.IP + " --port " + hostagent.hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 var grep = " | grep 'Total'";
-var result = "Number of requsts,Time,Min,Max,Avg,Median,Std. Dev.\n";
+// var result = "Number of requsts,Time,Min,Max,Avg,Median,Std. Dev.\n";
+var result = "Number of requsts,Time\n";
 for (i = 1; i <= 10; i++){
 	numConn = i * increase;
 	// var httperf = "httperf --server thalley.com --num-conn " + numConn + " --rate 50";
@@ -29,7 +30,7 @@ for (i = 1; i <= 10; i++){
 	console.log("Avg:\t\t " + avg);
 	console.log("Median:\t\t " + median);
 	console.log("Std. Dev.:\t " + stddev);
-	result += numConn + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
+	result += numConn + "," + time;// + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
 }
 
 
