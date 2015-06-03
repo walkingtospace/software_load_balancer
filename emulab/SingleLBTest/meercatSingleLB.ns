@@ -6,20 +6,20 @@ source tb_compat.tcl
 # Nodes
 set LB [$ns node]
 tb-set-node-os $LB ubuntu-12-meercat
-tb-set-node-startcmd $LB "/proj/Reactor/software_load_balancer/emulab/lbstartupscript.sh"
+tb-set-node-startcmd $LB "/proj/Reactor/software_load_balancer/emulab/SingleLBTest/lbstartupscript.sh"
 
 set Generator [$ns node]
 tb-set-node-os $Generator ubuntu-12-meercat
 
 set HA [$ns node]
 tb-set-node-os $HA ubuntu-12-meercat
-tb-set-node-startcmd $HA "/proj/Reactor/software_load_balancer/emulab/NoLBTest/hastartupscript.sh"
+tb-set-node-startcmd $HA "/proj/Reactor/software_load_balancer/emulab/SingleLBTest/hastartupscript.sh"
 
 set maxnodes 5
 for {set i 1} {$i <= $maxnodes} {incr i} {
     set node($i) [$ns node]
     tb-set-node-os $node($i) ubuntu-12-meercat
-    tb-set-node-startcmd $node($i) "/proj/Reactor/software_load_balancer/emulab/clientstartupscript.sh"
+    tb-set-node-startcmd $node($i) "/proj/Reactor/software_load_balancer/emulab/SingleLBTest/clientstartupscript.sh"
 }
 
 $ns rtproto Static
