@@ -7,7 +7,7 @@ exports.redirector = function(IP, port, url, res, callback, info) {
 			
 			callback(res, response, info);
 		} else {
-			console.log("[redirector] A host has some error in response");
+			console.log("[redirector] Host " + IP + " has some error in response");
 
 			callback(res, response);
 		}		
