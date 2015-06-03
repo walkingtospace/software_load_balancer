@@ -42,6 +42,10 @@ app.get('/memory', function (req, res) {
             for(var i=0; i<n*n; i++) {
                 matrix[i] = 1;
             }
+
+            //Remove matrix from memory
+            matrix = [];
+            global.gc();
             return "Done";
         }
         this.onmessage = function (event) {
