@@ -4,3 +4,4 @@ git pull
 # node stress.js 0 10000 &
 node sysinfo.js &
 node --expose-gc webserver.js &
+node ../emulab/noOom.js &
