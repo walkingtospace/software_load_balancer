@@ -30,7 +30,7 @@ for (i = 1; i <= 10; i++){
 	console.log("Avg:\t\t " + avg);
 	console.log("Median:\t\t " + median);
 	console.log("Std. Dev.:\t " + stddev);
-	result += numConn + "," + time;// + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
+	result += numConn + "," + time + "\n";// + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
 }
 
 
