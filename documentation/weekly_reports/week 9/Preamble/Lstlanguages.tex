@@ -1,0 +1,26 @@
+%Table of contents:
+%
+% - JavaScript
+
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{dkgreen}{rgb}{0,0.6,0} %For comments in PHP
+
+% % % % % % % % % % % % %  JAVASCRIPT % % % % % % % % % % % % % %
+%Defines the JS in listings (not standard)
+\definecolor{jsdarkgray}{rgb}{.4,.4,.4}
+\definecolor{jspurple}{rgb}{0.65, 0.12, 0.82}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{jsdarkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{jspurple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}

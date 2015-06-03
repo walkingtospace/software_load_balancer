@@ -1,0 +1,44 @@
+\documentclass[11pt,letter]{article}
+
+\input{./Preamble/Preamble}
+\author{Honam Bang and Jens Emil Gydesen}
+\date{\today}
+\title{Weekly Report - Week 9}
+\begin{document}
+\maketitle
+\section{Project Summary}
+We are developing a layer 7 load balancing system, codename ``Meercat'', that uses several load balancers to more efficiently balance the traffic amongst servers in a data center. The idea is that, rather than having a single load balancer, we have several load balancers that communicate with each other to load balance all servers. Each load balancer is able to send traffic to any server and we will use statistics to identify the required resources for each request.
+
+We have looked at the Ananta (L4 software load balancer) paper (reference in the Duet paper from class)\cite{ananta} and also HAProxy\cite{haproxy}.
+
+The goal is to, by having multiple load balancers, to more the system very scalable to a high amount of servers as well as eliminating having a single point of failure. 
+
+\section{Progress}
+In implementation part, We've implemented the multi load balancing system. Now we complete the implementation and we are on running several performance measurement. The features what we have implemented are:
+\begin{enumerate}
+	\item[a)] A Meercat communicate with all other n-1 Meercats to distribute traffic efficiently
+	\item[b)]  A meercat system consists of one master and multi slaves which are connected to each other.
+	\item[c)]  A meercat system takes advantages of multi loadbalancer system. When a master fails (power-off or error) while on running, one of the other slaves automatically takes over the role.
+	\item[d)] A meercat supports two routing algorithms; Round-Robin and CPU/MEM-usage-based routing. A master checks all CPU/MEM resource usage of hosts and propagates to slaves. All slaves ping to the master every seconds; if no response, the next slave becomes a master.
+\end{enumerate}
+
+The communication diagram between a master and slave are described in the below figure:
+\begin{center}
+	\includegraphics[scale=0.5]{./comm.png}
+\end{center}
+
+The only master can listen to resource status of hosts, and can propagates these information to slaves. All slaves ping to a master in every 1 sec. If a master get power-off or down, the next slave automatically takes over the master role (failover). A meercat has three thread to handle multi channel communication as the below figure shows.
+\begin{center}
+	\includegraphics[scale=0.5]{./interface.png}
+\end{center}
+ 
+\section{For Next Week}
+For next week, we will measure the performance of our meercat, and also will prove whether our initial assumption-multi load balancer system would take advantages than a single load balancer in some specific area - is correct or wrong with several metrics.
+
+\begin{thebibliography}{9}
+  \bibitem{ananta}
+  Patel, Parveen, et al. "Ananta: Cloud scale load balancing." ACM SIGCOMM Computer Communication Review. Vol. 43. No. 4. ACM, 2013.
+  \bibitem{haproxy}
+  Tarreau, Willy. "HAProxy-The Reliable, High-Performance TCP/HTTP Load Balancer." 2011-8)[2013-4]. http://haproxy. lwt. eu (2012).
+\end{thebibliography}
+\end{document}
