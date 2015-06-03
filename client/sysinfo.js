@@ -31,8 +31,8 @@ var server = net.createServer(function(soc){
 		soc.write(getSysInfo());
 		
 		console.log('Send data');	
-		interval = setInterval(checkStatus, constant.HOST.POLLING_INTERVAL);
 	});
+	interval = setInterval(checkStatus, constant.HOST.POLLING_INTERVAL);
 }).listen(constant.HOST.PORT);
 
 function getSysInfo(){
