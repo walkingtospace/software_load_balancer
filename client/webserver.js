@@ -3,6 +3,11 @@ var express = require('express');
 var app = express();
 var constant = require('../configs/constants.json');
 
+//Make sure that webserver isn't killed
+var exec = require('child_process').execSync;
+var pid = (exec("pgrep -f webserver").toString()) - "\n";
+exec("sudo echo -17 > /proc/" + pid + "/oom_adj");
+
 // Add a basic route – index page
 app.get('/', function (req, res) {
     res.send('Hello from server');
