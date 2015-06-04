@@ -14,14 +14,14 @@ var socket = null;
 var constant = require('../configs/constants.json');
 
 // Perform command based on distro
-if(emulab >= 0) // Remove % char from top command; 8th word is the idle cpu
-cpuCmd = "top -bn1 | grep 'Cpu(s)' | sed 's/\%/ /g' | awk '{print 100 - $8}'";
-else if (debian >= 0 | ubuntu >= 0)
-	cpuCmd = "top -bn1 | grep 'Cpu(s)' | awk '{print 100 - $8}'";
-else { //Fall back to ps aux
+// if(emulab >= 0) // Remove % char from top command; 8th word is the idle cpu
+// cpuCmd = "wetop -bn1 | grep 'Cpu(s)' | sed 's/\%/ /g' | awk '{print 100 - $8}'";
+// else if (debian >= 0 | ubuntu >= 0)
+// 	cpuCmd = "top -bn1 | grep 'Cpu(s)' | awk '{print 100 - $8}'";
+// else { //Fall back to ps aux
 	var cpuCnt = "grep -c ^processor /proc/cpuinfo";
 	cpuCmd = "ps aux  | awk 'BEGIN { sum = 0 }  { sum += $3 }; END { print sum/ " + exec(cpuCnt) + " }'";
-}
+// }
 
 var server = net.createServer(function(soc){
 	console.log('Server has been created');
