@@ -66,7 +66,7 @@ app.get('/memory', function (req, res) {
     // Limit total memory usage so that we avoid server crash
     function checkMemory(){
         if ((running * sizeOfMatrix) > (constant.CLIENT.MAXMEMUSE * OneGB)){
-            setTimeout(checkMemory, 2000);
+            setTimeout(checkMemory, 1000);
         }
         else{
             worker.postMessage(constant.CLIENT.MATRIXSIZE);

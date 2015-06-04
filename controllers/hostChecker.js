@@ -2,7 +2,7 @@ var net = require('net');
 var constant = require("../configs/constants.json");
 var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
-var queue = []; 
+var queue = [];
 
 (function() {
 	for(var i=0; i<hostsize ; ++i) {
@@ -13,7 +13,7 @@ var queue = [];
 
 			setTimeout(writeTo, constant.SERVER.TIMEFORHOST); //for synchronization with queue.push()
 		});
-			
+
 		client.on('data', function(data) {
 			console.log('[hostChecker] ' + 'From ' + this.remoteAddress + " : " + data.toString());
 

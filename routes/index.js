@@ -47,7 +47,8 @@ function runMasterChecker() {
 					}
 					
 					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) { //store host resource info
-						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
+						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
+						console.log(queue);	
 					} 
 				} catch (e) {
 					console.log("[parent] json format error"); 
@@ -166,11 +167,10 @@ function roundrobin(req, res, next) {
 function resourcebase(req, res, next) {
 	if(req.url === "/memory")
 		req.params.type = constant.SERVER.MEM;
-	else // use CPU for all other requests
+	else
 		req.params.type = constant.SERVER.CPU;
 
 	var nextHost = getPriority(req.params.type);	
-	console.log(queue);
 	if(nextHost === undefined) {
 		console.log("[CPU/MEM] Redirection failed");	
 		console.log("[CPU/MEM] Falling back to roundrobin");

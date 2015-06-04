@@ -15,7 +15,7 @@ var constant = require('../configs/constants.json');
 
 // Perform command based on distro
 if(emulab >= 0) // Remove % char from top command; 8th word is the idle cpu
-	cpuCmd = "top -bn1 | grep 'Cpu(s)' | sed 's/\%/ /g' | awk '{print 100 - $8}'";
+cpuCmd = "top -bn1 | grep 'Cpu(s)' | sed 's/\%/ /g' | awk '{print 100 - $8}'";
 else if (debian >= 0 | ubuntu >= 0)
 	cpuCmd = "top -bn1 | grep 'Cpu(s)' | awk '{print 100 - $8}'";
 else { //Fall back to ps aux
@@ -29,10 +29,9 @@ var server = net.createServer(function(soc){
 	soc.on('data', function(data){
 		console.log("resv data");
 		soc.write(getSysInfo());
-		
-		console.log('Send data');	
+		console.log('Send data');
 	});
-	interval = setInterval(checkStatus, constant.HOST.POLLING_INTERVAL);
+	setInterval(checkStatus, constant.HOST.POLLING_INTERVAL);
 }).listen(constant.HOST.PORT);
 
 function getSysInfo(){
@@ -49,15 +48,12 @@ function getSysInfo(){
 }
 
 function checkStatus() {
-	var json = getSysInfo();
-
-	if(json.cpu > constant.HOST.CPU_THRESHOLD || json.mem > constant.MEM_THRESHOLD) { 
+	var jsonStr = getSysInfo();
+	var json = JSON.parse(jsonStr);
+	if(json.cpu > constant.HOST.CPU_THRESHOLD || json.mem > constant.HOST.MEM_THRESHOLD) {
 		console.log('Send data');
-
-		socket.write(json);
-	} 
-
-
+		socket.write(jsonStr);
+	}
 }
 
 /*

@@ -16,14 +16,14 @@
 
 	"HOST" : {
 		"PORT" : 40000,	
-		"POLLING_INTERVAL" : 500,
+		"POLLING_INTERVAL" : 100,
 		"CPU_THRESHOLD" : 70,
 		"MEM_THRESHOLD" : 70
 	},
 
 	"CLIENT" : {
 		"PORT" : 3000,
-		"FIBNUM" : 38,
+		"FIBNUM" : 40,
 		"MATRIXSIZE" : 3000,
 		"MEMORYDELAY" : 0,
 		"MAXMEMUSE" : 10
