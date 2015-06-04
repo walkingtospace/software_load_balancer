@@ -48,7 +48,6 @@ function runMasterChecker() {
 					
 					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) { //store host resource info
 						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
-						console.log(queue);	
 					} 
 				} catch (e) {
 					console.log("[parent] json format error"); 
@@ -170,6 +169,7 @@ function resourcebase(req, res, next) {
 	else
 		req.params.type = constant.SERVER.CPU;
 
+	console.log(queue);	
 	var nextHost = getPriority(req.params.type);	
 	if(nextHost === undefined) {
 		console.log("[CPU/MEM] Redirection failed");	
