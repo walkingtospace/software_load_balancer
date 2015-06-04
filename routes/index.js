@@ -24,7 +24,7 @@ exports.connect = function(app) {
 	myIP = ip.address();
 
 	if(process.env.type === constant.SERVER.MASTER) {	
-		hostcheckerTimerID = setInterval(runHostChecker, constant.SERVER.TIME_FOR_HOSTCHECK); //client
+		runHostChecker();
 		runSlaveChecker(); //listener 
 	} else if(process.env.type === constant.SERVER.SLAVE) {
 		mastercheckerTimerID = setInterval(runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
@@ -70,7 +70,8 @@ function runMasterChecker() {
 
 				//run slavechecker
 				process.env.type = constant.SERVER.MASTER;
-				hostcheckerTimerID = setInterval(runHostChecker, constant.SERVER.TIME_FOR_HOSTCHECK); //client
+
+				runHostChecker();
 				runSlaveChecker(); //listener 
 
 				//broadcast : "I am a master"
