@@ -12,7 +12,8 @@ var fork = require('child_process').fork;
 var hostCheckProcess = null;
 var slaveCheckProcess = null;
 var masterCheckProcess = null;
-var intervalId = null;
+var mastercheckerTimerID = null;
+var hostcheckerTimerID = null;
 var queue = []; //host information
 
 exports.connect = function(app) {
@@ -23,10 +24,10 @@ exports.connect = function(app) {
 	myIP = ip.address();
 
 	if(process.env.type === constant.SERVER.MASTER) {	
-		runHostChecker(); //client
+		hostcheckerTimerID = setInterval(runHostChecker, constant.SERVER.TIME_FOR_HOSTCHECK); //client
 		runSlaveChecker(); //listener 
 	} else if(process.env.type === constant.SERVER.SLAVE) {
-		intervalId = setInterval(runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
+		mastercheckerTimerID = setInterval(runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
 	}
 }
 
@@ -65,11 +66,11 @@ function runMasterChecker() {
 			masterCheckProcess = null;
 
 			if(failoverManager.nextMaster(masterIP, myIP) === true) {
-				clearInterval(intervalId); //quit masterchecker
+				clearInterval(mastercheckerTimerID); //quit masterchecker
 
 				//run slavechecker
 				process.env.type = constant.SERVER.MASTER;
-				runHostChecker(); //client
+				hostcheckerTimerID = setInterval(runHostChecker, constant.SERVER.TIME_FOR_HOSTCHECK); //client
 				runSlaveChecker(); //listener 
 
 				//broadcast : "I am a master"
