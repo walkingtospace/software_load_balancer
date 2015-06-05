@@ -206,7 +206,7 @@ function getPriority(type) {
 	} else if(type === constant.SERVER.MEM) {
 		temp = 200; //Use both CPU and MEM usage here
 		for(var i in queue) {
-			if(temp > (parseFloat(queue[i].mem) + parseFloat(queue[i].cpu)) {	
+			if(temp > (parseFloat(queue[i].mem) + parseFloat(queue[i].cpu))) {	
 				temp = queue[i].mem;
 				IP = i;
 			}
