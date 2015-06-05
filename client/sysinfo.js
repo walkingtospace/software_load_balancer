@@ -70,7 +70,7 @@ function getSysInfo() {
 	  	 mem > prevMem || mem < prevMem ) {
 	  	 //Round up to nearest 10 (or what the value of change is)
 	  	prevMem = (parseInt((mem-1)/change, change)+1)*change
-	  	prevCpu = (parseInt((cpuc-1)/change, change)+1)*change
+	  	prevCpu = (parseInt((cpu-1)/change, change)+1)*change
 	  	console.log('Send data');
 	  	console.log(prettyJSON);
 	  	socket.write(prettyJSON);
