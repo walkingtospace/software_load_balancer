@@ -34,7 +34,7 @@ for (i = 1; i <= 10; i++){
 	console.log("Avg:\t\t " + avg);
 	console.log("Median:\t\t " + median);
 	console.log("Std. Dev.:\t " + stddev);
-	resultStr += numConn + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
+	resultStr += rate + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
 }
 
 // Save to file: [expName]results
