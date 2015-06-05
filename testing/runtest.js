@@ -4,7 +4,7 @@ var fs = require('fs');
 var hostagents = require('../configs/hostagent.json');
 var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
-var increase = 50; // requests per second
+var increase = 20; // requests per second
 var timeout = 10; //in seconds
 var iterations = 1;
 if(process.argv.length > 2)
