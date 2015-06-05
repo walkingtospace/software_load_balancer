@@ -204,8 +204,9 @@ function getPriority(type) {
 			}
 		}	
 	} else if(type === constant.SERVER.MEM) {
+		temp = 200; //Use both CPU and MEM usage here
 		for(var i in queue) {
-			if(temp > parseInt(queue[i].mem)) {	
+			if(temp > (parseFloat(queue[i].mem) + parseFloat(queue[i].cpu)) {	
 				temp = queue[i].mem;
 				IP = i;
 			}
@@ -214,7 +215,7 @@ function getPriority(type) {
 	//If no type was given
 	else
 		return undefined;
-	if(temp == 100)
+	if(temp == 100) //If all servers are at 100%, fallback to roundrobin
 		return undefined;
 
 	for(var i=0; i<hostsize ; ++i) { //the lowest-resource-usage-first-served

@@ -15,7 +15,7 @@ var constant = require('../configs/constants.json');
 var os = require("os");
 var cpu = 0;
 var mem = 0;
-var change = 20;
+var change = 10;
 var prevCpu = 0;
 var prevMem = 0;
 
@@ -66,12 +66,11 @@ function getSysInfo() {
 	  json = '{ "ip": "' + ip.address() + '","cpu": "' + cpu +'","mem": "' + mem + '" }';
 	  prettyJSON = JSON.stringify(JSON.parse(json), null, 2);
 	  // console.log(prettyJSON);
-	  if(cpu > (prevCpu + change) || cpu < (prevCpu - change) ||
-	  	 mem > prevMem + change || mem < prevMem - change) {
-	  	console.log(mem);
-	  	console.log(prevMem+change);
-	  	prevMem = mem;
-	  	prevCpu = cpu;
+	  if(cpu > prevCpu || cpu < prevCpu ||
+	  	 mem > prevMem || mem < prevMem {
+	  	 //Round up to nearest 10 (or what the value of change is)
+	  	prevMem = (parseInt((mem-1)/change, change)+1)*change
+	  	prevCpu = (parseInt((cpuc-1)/change, change)+1)*change
 	  	console.log('Send data');
 	  	console.log(prettyJSON);
 	  	socket.write(prettyJSON);
