@@ -63,17 +63,21 @@ function getSysInfo() {
 	  mem = exec(memCmd).toString();
 	  mem = parseFloat(mem.substring(0, mem.length - 1)); //Remove newline
 
+
+	  //Round up to nearest 10 (or what the value of change is)
+	  mem = (parseInt((mem-1)/change, change)+1)*change
+	  cpu = (parseInt((cpu-1)/change, change)+1)*change
+
 	  json = '{ "ip": "' + ip.address() + '","cpu": "' + cpu +'","mem": "' + mem + '" }';
 	  prettyJSON = JSON.stringify(JSON.parse(json), null, 2);
 	  // console.log(prettyJSON);
 	  if(cpu > prevCpu || cpu < prevCpu ||
 	  	 mem > prevMem || mem < prevMem ) {
-	  	 //Round up to nearest 10 (or what the value of change is)
-	  	prevMem = (parseInt((mem-1)/change, change)+1)*change
-	  	prevCpu = (parseInt((cpu-1)/change, change)+1)*change
+	  	prevMem = mem;
+	  	prevCpu = cpu;
 	  	console.log('Send data');
-	  	console.log(prettyJSON);
 	  	socket.write(prettyJSON);
+	  	console.log(prettyJSON);
 	  }
 	 
 	}, constant.HOST.POLLING_INTERVAL);
