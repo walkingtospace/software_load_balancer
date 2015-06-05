@@ -61,7 +61,7 @@ function getSysInfo() {
 	  // cpuP = percentageCPU;
 	  // console.log(percentageCPU + "% CPU Usage.");
 	  mem = exec(memCmd).toString();
-	  mem = mem.substring(0, mem.length - 1); //Remove newline
+	  mem = parseFloat(mem.substring(0, mem.length - 1)); //Remove newline
 
 	  json = '{ "ip": "' + ip.address() + '","cpu": "' + cpu +'","mem": "' + mem + '" }';
 	  prettyJSON = JSON.stringify(JSON.parse(json), null, 2);
