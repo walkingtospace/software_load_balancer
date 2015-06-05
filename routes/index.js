@@ -171,8 +171,8 @@ function resourcebase(req, res, next) {
 	else
 		req.params.type = constant.SERVER.CPU;
 
-	console.log(queue);	
-	var nextHost = getPriority(req.params.type);	
+	var nextHost = getPriority(req.params.type);
+	console.log(queue);
 	if(nextHost === undefined) {
 		console.log("[CPU/MEM] Redirection failed");	
 		console.log("[CPU/MEM] Falling back to roundrobin");
@@ -194,10 +194,9 @@ function resourcebase(req, res, next) {
 
 function getPriority(type) {
 	var IP;
-	var temp;
+	var temp = 100;
 	
 	if(type === constant.SERVER.CPU) {
-		temp = {"cpu": constant.HOST.CPU_THRESHOLD};
 		for(var i in queue) {
 			if(temp.cpu > parseInt(queue[i].cpu)) {	
 				temp = queue[i];
@@ -205,8 +204,6 @@ function getPriority(type) {
 			}
 		}	
 	} else if(type === constant.SERVER.MEM) {
-		temp = {"mem": constant.HOST.MEM_THRESHOLD};
-
 		for(var i in queue) {
 			if(temp.mem > parseInt(queue[i].mem)) {	
 				temp = queue[i];
@@ -217,18 +214,11 @@ function getPriority(type) {
 	//If no type was given
 	else
 		return undefined;
-
-	if(temp.cpu !== undefined && temp.cpu >= constant.HOST.CPU_THRESHOLD) {
-	
-		return constant.SERVER.NO_CPU_RESOURCE;
-	} else if(temp.mem !== undefined && temp.mem >= constant.HOST.MEM_THERESHOLD) {
-	
-		return constant.SERVER.NO_MEM_RESOURCE;
-	}
+	if(temp == 100)
+		return undefined;
 
 	for(var i=0; i<hostsize ; ++i) { //the lowest-resource-usage-first-served
 		if(hosts.hosts[i].IP == IP) {
-
 			return {"IP" : IP, "port" : hosts.hosts[i].port, "status" : temp};
 		}
 	}
