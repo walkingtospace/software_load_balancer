@@ -27,6 +27,8 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the resear
 - MEM usage-based redirection request : "http://xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/MEM" into url, then it shows the load balancing results by hosts' MEM usage
 
 ## Performance Measurement
+- We have used httperf to measure the performance of our load load balancer by sending a number of requests and measuring the completion time
+- Preliminary results show that measuing CPU and Memory usage on the servers compared to doing simple roundrobin decreases runtime by approximately 34% on average
 
 ## License 
 
