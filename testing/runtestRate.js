@@ -4,7 +4,7 @@ var fs = require('fs');
 var hostagents = require('../configs/hostagent.json');
 var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
-var increase = 20; // requests per second
+var increase = 10; // requests per second
 var timeout = 10; //in seconds
 var iterations = 1;
 if(process.argv.length > 2)
@@ -12,9 +12,9 @@ if(process.argv.length > 2)
 
 var resultStr = "Requsts,Time,Min,Max,Avg,Median,Std.Dev.\n";
 for (i = 1; i <= 10; i++){
-	numConn = i * increase;
+	var rate = i * increase;
 	var result = new Array(iterations);
-	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + increase + " --wlog Y,wlog.log";
+	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 	// var httperf = "httperf --server thalley.com --hog ";
 	console.log(httperf);
 	for(j = 0; j < iterations; j++){
@@ -39,7 +39,7 @@ for (i = 1; i <= 10; i++){
 
 // Save to file: [expName]results
 var expname = (exec("hostname").toString().split(/[.]/))[1];
-fs.writeFile(expname + "results", resultStr, function(err) {
+fs.writeFile(expname + "resultsRate", resultStr, function(err) {
 	if(err) {
 		return console.log(err);
 	}
