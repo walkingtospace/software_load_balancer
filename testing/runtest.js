@@ -14,7 +14,7 @@ var resultStr = "Requsts,Time,Min,Max,Avg,Median,Std.Dev.\n";
 for (i = 1; i <= 10; i++){
 	numConn = i * increase;
 	var result = new Array(iterations);
-	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + numConn + " --wlog Y,wlog.log";
+	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + increase + " --wlog Y,wlog.log";
 	// var httperf = "httperf --server thalley.com --hog ";
 	console.log(httperf);
 	for(j = 0; j < iterations; j++){

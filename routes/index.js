@@ -198,15 +198,15 @@ function getPriority(type) {
 	
 	if(type === constant.SERVER.CPU) {
 		for(var i in queue) {
-			if(temp.cpu > parseInt(queue[i].cpu)) {	
-				temp = queue[i];
+			if(temp > parseInt(queue[i].cpu)) {	
+				temp = queue[i].cpu;
 				IP = i;
 			}
 		}	
 	} else if(type === constant.SERVER.MEM) {
 		for(var i in queue) {
-			if(temp.mem > parseInt(queue[i].mem)) {	
-				temp = queue[i];
+			if(temp > parseInt(queue[i].mem)) {	
+				temp = queue[i].mem;
 				IP = i;
 			}
 		}
