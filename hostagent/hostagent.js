@@ -1,6 +1,7 @@
 var constant = require('../configs/constants.json');
 var hosts = require('../configs/slaves.json');
 var hostsize = hosts.slaves.length;
+var hasLB = true;
 var hostcount = 0;
 var host;
 var middleware = require('../controllers/middleware');
@@ -9,6 +10,7 @@ var app = express();
 
 // If there are no Meercats in slaves.json, use end-hosts
 if (hostsize == 0){
+  hasLB = false;
   hosts = require('../configs/hosts.json');
   hostsize = hosts.hosts.length;
 }
@@ -24,10 +26,10 @@ function roundrobin(req, res, next) {
 
   //redirect requests to host
   var reqURL = req.url;
-  if (hostsize == 0)
-    host = hosts.hosts[hostcount];
-  else
+  if(hasLB)
     host = hosts.slaves[hostcount];
+  else
+    host = hosts.hosts[hostcount];
   console.log("[roundrobin] Redirect traffic to : " + host.IP + " port:" + host.port); 
   middleware.redirector(host.IP, host.port, reqURL, res, send);
 }
