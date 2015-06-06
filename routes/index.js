@@ -4,16 +4,9 @@ var hostsize = hosts.hosts.length;
 var hostcount = 0;
 var middleware = require('../controllers/middleware');
 var failoverManager = require('../controllers/failoverManager');
-var masterIP = null;
-var myIP = null;
-
-var ip = require('ip'); //local IP
+var intervalID = null;
 var fork = require('child_process').fork;
-var hostCheckProcess = null;
-var slaveCheckProcess = null;
-var masterCheckProcess = null;
-var mastercheckerTimerID = null;
-var hostcheckerTimerID = null;
+var peerListenerProcess = null;
 var queue = []; //host information
 
 exports.connect = function(app) {
@@ -21,97 +14,79 @@ exports.connect = function(app) {
 	app.get('/route/roundrobin*', roundrobin); //basic
 	app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
 
-	myIP = ip.address();
+	initResource();
+	runPeerListener(); 
 
-	if(process.env.type === constant.SERVER.MASTER) {	
-		runHostChecker();
-		runSlaveChecker(); //listener 
-	} else if(process.env.type === constant.SERVER.SLAVE) {
-		mastercheckerTimerID = setInterval(runMasterChecker, constant.SERVER.TIME_FOR_MASTERCHECK); //client
+	intervalID = setInterval(function() {send(constant.SERVER.RESOURCE);}, TIME_FOR_SHARE);
+}
+
+function initResource() {
+	for(var i=0 ; i<hostsize ; ++i) {
+		queue[hosts.hosts.IP] = {"CPU" : constant.HOST.INIT_CPU, "MEM" :  constant.HOST.INIT_MEM};
 	}
 }
 
-function runMasterChecker() {
-	if(masterCheckProcess === null) {
-		masterCheckProcess = fork('./controllers/masterChecker.js');
+function getResource(request) { //param1 : {"type" : CPU||MEM, "workload" : integer}
+	if(request.type === constant.SERVER.CPU) {
+		for(var key in queue) {
+			if(queue[key].CPU > request.CPU) {
 
-		masterCheckProcess.on('message', function(data) {
-			data = data.toString();
-			//console.log( '[parent] Get resource info : '+ data);
-
-			if(typeof(data) === "string") {
-				try {
-					var json = JSON.parse(data);
-
-					if(json.master != undefined) {
-						masterIP = json.ip;
-					}
-					
-					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) { //store host resource info
-						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};
-					} 
-				} catch (e) {
-					console.log("[parent] json format error"); 
-				}	
+				return queue[key];
 			}
-		});
+		}
+	} else if(request.type === constant.SERVER.MEM) {
+		for(var key in queue) {
+			if(queue[key].MEM > request.MEM) {
 
-		masterCheckProcess.on('error', function(data) {
-	    		console.log('[parent] masterChecker has errors : ' + data);
-		});
-
-		 //assumption : there is the only case masterCheckerProcess is quit-> lost master
-		masterCheckProcess.on('exit', function(data) {
-			console.log('[parent] masterChecker process quit: ' + data);
-			masterCheckProcess = null;
-
-			if(failoverManager.nextMaster(masterIP, myIP) === true) {
-				clearInterval(mastercheckerTimerID); //quit masterchecker
-
-				//run slavechecker
-				process.env.type = constant.SERVER.MASTER;
-
-				runHostChecker();
-				runSlaveChecker(); //listener 
-
-				//broadcast : "I am a master"
-				var msg = "I'm a master";
-				failoverManager.broadcastToSlaves(msg);
-			} 
-		});
-/*
-		masterCheckProcess.on('close', function(data) {
-			console.log('[parent] masterChecker process close: ' + data);
-			masterCheckProcess = null;
-		});
-*/
+				return queue[key];
+			}
+		}
 	}
+
+	return null;
 }
 
-function runSlaveChecker() { 
-	if(slaveCheckProcess === null) {
-		slaveCheckProcess = fork('./controllers/slaveChecker.js');
+function setResource() {
 
-		slaveCheckProcess.on('message', function(data) {
-			
+}
+
+function send(type) {
+	if(type === constant.SERVER.SOS){
+
+		peerListenerProcess.send(constant.SERVER.SOS);
+	} else if(type ==== constant.SERVER.RESOURCE) {
+
+		peerListenerProcess.send(queue);
+	}
+}	
+
+
+function runPeerListener() { 
+	if(peerListenerProcess === null) {
+		peerListenerProcess = fork('./controllers/peerListener.js');
+
+		peerListenerProcess.on('message', function(data) { //data : string(IP)
+			data = data.toString();
+
+
 		});
 
-		slaveCheckProcess.on('error', function(data) {
-	    		console.log('[parent] slaveChecker has errors :' + data);
+		peerListenerProcess.on('error', function(data) {
+	    		console.log('[parent] peerListener has errors :' + data);
 		});
 
-		slaveCheckProcess.on('exit', function(data) {
-			console.log('[parent] slaveChecker process quit: ' + data);
-			slaveCheckProcess = null;
+		peerListenerProcess.on('exit', function(data) {
+			console.log('[parent] peerListener process quit: ' + data);
+			peerListenerProcess = null;
 		});
 	}
 }
 
-function runHostChecker() { //To get resource information of hosts
-	if(hostCheckProcess === null) {
-		hostCheckProcess = fork('./controllers/hostChecker.js');
+/*function runPeerChecker() { //To get resource information of hosts
+	if(peerCheckProcess === null) {
+		peerCheckProcess = fork('./controllers/peerChecker.js');
 
-		hostCheckProcess.on('message', function(data) {
+		peerCheckProcess.on('message', function(data) {
 			if(typeof(data) === "string") {
 				try {
 					var json = JSON.parse(data);
@@ -119,10 +94,10 @@ function runHostChecker() { //To get resource information of hosts
 					if(json.ip != undefined && json.cpu != undefined && json.mem != undefined) {
 						queue[json.ip] = {"cpu": json.cpu, "mem": json.mem};	
 
-						if(slaveCheckProcess != null) { 	//update slaves with host resource info
+						if(peerCheckProcess != null) { 	//update slaves with host resource info
 							var obj = {"ip" : json.ip , "cpu" : json.cpu, "mem" : json.mem};
 
-							slaveCheckProcess.send(obj);
+							peerCheckProcess.send(obj);
 								
 						}
 					} else {
@@ -134,18 +109,18 @@ function runHostChecker() { //To get resource information of hosts
 			}
 		});
 
-		hostCheckProcess.on('error', function(data) {
+		peerCheckProcess.on('error', function(data) {
 			data = data.toString();
-	    		console.log('[parent] hostChecker has errors :' + data);
+	    		console.log('[parent] peerChecker has errors :' + data);
 		});
 
-		hostCheckProcess.on('exit', function(data) {
+		peerCheckProcess.on('exit', function(data) {
 			data = data.toString();
-			console.log('[parent] hostChecker process quit: ' + data);
+			console.log('[parent] peerChecker process quit: ' + data);
 			hostCheckProcess = null;
 		});
 	}
-}
+}*/
 
 function index(req, res, next) {
 	res.render('index', { title: 'Meercat Main Page' });
@@ -166,28 +141,30 @@ function roundrobin(req, res, next) {
 }
 
 function resourcebase(req, res, next) {
-	if(req.url === "/memory")
+	if(req.url === "/memory") {
 		req.params.type = constant.SERVER.MEM;
-	else
+	} else {
 		req.params.type = constant.SERVER.CPU;
+	}
 
-	console.log(queue);	
 	var nextHost = getPriority(req.params.type);	
+
 	if(nextHost === undefined) {
 		console.log("[CPU/MEM] Redirection failed");	
 		console.log("[CPU/MEM] Falling back to roundrobin");
+		
 		roundrobin(req, res, next);
 		// res.status(200).send("Redirection failed");
 	} else if(nextHost.IP !== undefined && nextHost.port !== undefined){
+		var reqURL = req.url; // remove /route/roundrobin from url
 		console.log("[CPU/MEM] Redirect traffic to : " + nextHost.IP + " port:" + nextHost.port); 
 		
-		var reqURL = req.url; // remove /route/roundrobin from url
 		middleware.redirector(nextHost.IP, nextHost.port, reqURL, res, send, nextHost);
 	} else {
 		console.log("No available resources");
 		console.log("Falling back to roundrobin");
-		roundrobin(req, res, next);
 
+		roundrobin(req, res, next);
 		// res.status(200).send("No available resources");
 	}
 }
