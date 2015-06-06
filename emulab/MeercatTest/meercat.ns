@@ -10,7 +10,7 @@ tb-set-node-os $Generator ubuntu-12-meercat
 # Host Agent
 set HA [$ns node]
 tb-set-node-os $HA ubuntu-12-meercat
-tb-set-node-startcmd $HA "/proj/Reactor/software_load_balancer/emulab/NoLBTest/hastartupscript.sh"
+tb-set-node-startcmd $HA "/proj/Reactor/software_load_balancer/emulab/MeercatTest/hastartupscript.sh"
 
 # Load Balancers
 set LB-1 [$ns node]
