@@ -10,12 +10,12 @@ var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
 var increase = 20; // requests per second
 var timeout = 10; //in seconds
-var iterations = 2;
+var iterations = 1;
 if(process.argv.length > 2)
 	iterations = process.argv[2].toString();
 
 var resultStr = "Requsts,Time,Min,Max,Avg,Median,Std.Dev.,CPU\n";
-for (i = 1; i <= 3; i++){
+for (i = 1; i <= 10; i++){
 	numConn = i * increase;
 	var result = new Array(iterations);
 	var cpus = new Array(iterations);
