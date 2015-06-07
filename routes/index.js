@@ -31,8 +31,9 @@ function runPeerListener() {
 			//TBD
 			if(reqStack.length > 0) {
 				var obj = reqStack.pop();
-				console.log("redirect to peer");
-				middleware.redirector(IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
+				console.log("redirect to peer: " + IP);
+
+				middleware.redirector(constant.SERVER.REDIRECTION, IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
 			} else {
 				console.log('[parent] stack underflow.');	
 			}
@@ -114,10 +115,17 @@ function roundrobin(req, res, next) {
 	//redirect requests to host
  	console.log("[roundrobin] Redirect traffic to : " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port); 
 
-	middleware.redirector(hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, req.url, res, send);
+	middleware.redirector(constant.SERVER.ORIGIN, hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, req.url, res, send);
 }
 
 function resourcebase(req, res, next) {
+	if(req.url === "/favicon.ico") {
+	 	res.writeHead(200, {'Content-Type': 'image/x-icon'} );
+          res.end(/* icon content here */);
+
+          return;
+	}
+
 	if(req.url === "/memory") {
 		req.params.type = constant.SERVER.MEM;
 	} else {
@@ -129,9 +137,8 @@ function resourcebase(req, res, next) {
 
 	if(nextHostIP !== null) {
 		console.log("[CPU/MEM] Redirect traffic to : " + nextHostIP); 
-
 		setResource(nextHostIP, unit, constant.SERVER.SEND);
-		middleware.redirector(nextHostIP, queue[nextHostIP].port, req.url, res, send, unit);
+		middleware.redirector(constant.SERVER.ORIGIN, nextHostIP, queue[nextHostIP].port, req.url, res, send, unit);
 	} else {
 		console.log("[parent] No available resources : send S.O.S");
 
@@ -142,21 +149,29 @@ function resourcebase(req, res, next) {
 	}
 }
 
-function send(res, resFromHost, info, IP) {
+function send(res, resFromHost, info, IP, type) {
 	if(resFromHost === undefined) {
 		res.status(200).send("Got error from host " + IP);
 
 	} else {
-		setResource(IP, info, constant.SERVER.RESPOND);
-
 		if(info !== null) {
 			var header = "Successfully received response </br>";
 			var address = "IP: "+ IP + "</br>"; 
 			var resStatus = "RESPONSE CODE: " + resFromHost.statusCode + "</br>";
-			var CPU = "Used CPU usage: " + info.CPU + " unit" + "</br>";
-			var MEM = "Used MEM usage: " + info.MEM + " unit" + "</br>";
-			var remainCPU = "Remained CPU usage: " + queue[IP].CPU + " unit" + "</br>";
-			var remainMEM = "Remained MEM usage: " + queue[IP].MEM + "unit" + "</br>";
+
+			if(type === constant.SERVER.ORIGIN) {
+				setResource(IP, info, constant.SERVER.RESPOND);
+
+				var CPU = "A host " + IP + " used CPU usage: " + info.CPU + " unit" + "</br>";
+				var MEM = "A host " + IP + " used MEM usage: " + info.MEM + " unit" + "</br>";
+				var remainCPU = "A host " + IP + " remained CPU usage: " + queue[IP].CPU + " unit" + "</br>";
+				var remainMEM = "A host " + IP + " remained MEM usage: " + queue[IP].MEM + "unit" + "</br>";
+			} else if(type === constant.SERVER.REDIRECTION){
+				var CPU = "My peer " + IP + " used CPU usage: " + info.CPU + " unit" + "</br>";
+				var MEM = "My peer " + IP + " used MEM usage: " + info.MEM + " unit" + "</br>";
+			} else {
+				//
+			}
 
 			res.status(200).send(header + address + resStatus + CPU + MEM+ remainCPU + remainMEM);
 		} else {

@@ -1,14 +1,14 @@
 var request = require("request");
 
-exports.redirector = function(IP, port, url, res, callback, info) {
-	console.log(url);
+exports.redirector = function(type, IP, port, url, res, callback, info) {
 	request('http://' + IP + ':' + port + url , function(error, response, body) {
 		if(!error && response.statusCode == 200) {
-			callback(res, response, info, IP);
+
+			callback(res, response, info, IP, type);
 		} else {
 			console.log("[redirector] Host " + IP + " has some error in response");
 
-			callback(res, response, null, IP);
+			callback(res, response, null, IP, type);
 		}		
 	});
 

@@ -13,7 +13,9 @@
 		"AVAILABLE" : "OK",
 		"NOT_AVAILABLE" : "NO",
 		"SEND" : "send",
-		"RESPOND" : "res"
+		"RESPOND" : "res",
+		"ORIGIN" : "ORIGIN",
+		"REDIRECTION" : "REDIRECTION" 
 	},
 
 	"HOST" : {
