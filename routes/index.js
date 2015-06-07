@@ -46,17 +46,23 @@ function getResource(request) { //param1 : {"type" : CPU||MEM, "workload" : inte
 	return null;
 }
 
-function setResource() {
-
+function setResource(IP, request) {
+	queue[IP].CPU -= request.CPU;
+	queue[IP].MEM -= request.MEM;
 }
 
-function send(type) {
+function send(type, data) {
 	if(type === constant.SERVER.SOS){
-
+		//send the size of data
 		peerListenerProcess.send(constant.SERVER.SOS);
 	} else if(type ==== constant.SERVER.RESOURCE) {
-
-		peerListenerProcess.send(queue);
+		for(var key in queue) {
+			if(queue[key].CPU !== undefined && queue[key].MEM !== undefined) {
+				var obj = {"CPU" : queue[key].CPU, "MEM" : queue[key].MEM};
+				peerListenerProcess.send(JSON.stringify(obj, null, 2));
+			}
+		}
+		
 	}
 }	
 
@@ -67,7 +73,6 @@ function runPeerListener() {
 
 		peerListenerProcess.on('message', function(data) { //data : string(IP)
 			data = data.toString();
-
 
 		});
 
@@ -169,7 +174,7 @@ function resourcebase(req, res, next) {
 	}
 }
 
-function getPriority(type) {
+function getPriority(type) { //first-come, first-served
 	var IP;
 	var temp;
 	

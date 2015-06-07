@@ -9,7 +9,9 @@
 		"RESOURCE" : "RES",
 		"NO_CPU_RESOURCE" : "NO_CPU_RESOURCE",
 		"NO_MEM_RESOURCE" : "NO_MEM_RESOURCE",
-		"SOS" : "SOS"
+		"SOS" : "SOS",
+		"AVAILABLE" : "OK",
+		"NOT_AVAILABLE" : "NO",
 	},
 
 	"HOST" : {

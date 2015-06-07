@@ -1,0 +1,14 @@
+{
+  "requests" : [
+    {
+      "TYPE" : "computation",
+      "CPU" : 5000,
+      "MEM" : 2000
+    },
+    {
+      "TYPE" : "memory",
+      "CPU" : 2000,
+      "MEM" : 5000
+    }
+  ]	
+}

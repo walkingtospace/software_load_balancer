@@ -2,7 +2,7 @@ var net = require('net');
 var constant = require("../configs/constants.json");
 var queue = [];
 var myResource = {};
-var peerResource = {};
+var peerResourceBuf = {};
 var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var peers = require('../configs/peers.json');
@@ -14,14 +14,26 @@ var peersize = peers.peers.length;
 
 	registerPeer();
 
-	peerResource = {"IP" : null, "CPU" : constant.HOST.INIT_CPU, "MEM" : constant.HOST.INIT_MEM}; //init
+	peerResourceBuf = {"IP" : null, "CPU" : constant.HOST.INIT_CPU, "MEM" : constant.HOST.INIT_MEM}; //init
 
 	var server = net.createServer(function(socket) {
 		socket.on('data', function(data){
 			console.log("[slaveChecker] Receive S.O.S from " + this.remoteAddress);
 
-			if(data === constant.SERVER.SOS) { //response to S.O.S
-				socket.write(JSON.stringify(myResource, null, 2));
+			try {
+				data = JSON.parse(data);
+
+				if(data.type === constant.SERVER.SOS) { //response to S.O.S
+					for(var key in myResource) { //first-come, first-served
+						if(myResource[key].CPU > data.CPU && myResource[key].MEM > data.MEM) {
+							socket.write(constant.SERVER.AVAILABLE);
+
+							break;
+						}
+					}
+				}
+			} catch(e) {
+				console.log("[peerListener] Json parsing error");
 			}
 		});
 	}).listen(constant.SERVER.INNERPORT);
@@ -50,13 +62,15 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), CPU"
 					var client = net.connect(queue[key].innerport, key, function(data) { //'connect' listener
 						console.log('[peerChecker] send S.O.S to' + this.remoteAddress;
 						
-						this.write(constant.SERVER.SOS);
+						var obj = {"type" : constant.SERVER.SOS, "CPU" : m.CPU, "MEM" : m.MEM};
+						
+						this.write(JSON.stringify(obj, null, 2));
 
 						this.on('data', function(data) {  //got response from other peer
 							var json = JSON.parse(data); //{"CPU" : integer, "MEM" : integer}
 
-							if(peerResource.CPU > json.CPU && peerResource.MEM > json.MEM)  {//First-come, First-served
-								peerResource = json;
+							if(peerResourceBuf.CPU > json.CPU && peerResourceBuf.MEM > json.MEM)  {//First-come, First-served
+								peerResourceBuf = json;
 								choosePeer(this.remoteAddress);
 
 								break;
@@ -74,7 +88,7 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), CPU"
 				} 
 			}	
 		} else if(m.CPU !== undefined && m.MEM !== undefined) {
-				myResource = {"CPU" : m.CPU, "MEM" : m.MEM};			
+				myResource.push({"CPU" : m.CPU, "MEM" : m.MEM});			
 		} else {
 			console.log('[peerChecker] myResource is undefined');
 		}
@@ -85,5 +99,6 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), CPU"
 });
 
 function choosePeer(IP) {
+	
 	process.send(IP);
 }
