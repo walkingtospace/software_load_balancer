@@ -11,11 +11,10 @@ for (var i = 0; i < experiments.length; i++)
 		expname = "/proj/Reactor/exp/" + experiments[i] + "/tbdata/tbreport.log";
 		break;
 	}
-}
 
 hosts.hosts.forEach(function(host){
     var ssh = "ssh thalley@" + host.IP + " ";
-    exec(ssh + "'killall node'");
+    exec(ssh + "'pkill node'");
     exec(ssh + "/proj/Reactor/software_load_balancer/emulab/" + expname + "/clientstartupscript.sh");
 });
 
