@@ -14,8 +14,9 @@ for (var i = 0; i < experiments.length; i++)
 
 hosts.hosts.forEach(function(host){
     var ssh = "ssh thalley@" + host.IP + " ";
-    // exec(ssh + "'pkill node'");
-    exec(ssh + "'/proj/Reactor/software_load_balancer/emulab/" + expname + "/clientstartupscript.sh'");
+    var cmd = ssh + "'/proj/Reactor/software_load_balancer/emulab/" + expname + "/clientstartupscript.sh'";
+    console.log(cmd);
+    exec(cmd);
 });
 
 // for each lb:
