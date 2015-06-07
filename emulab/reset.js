@@ -8,14 +8,14 @@ var expname = (exec("hostname").toString().split(/[.]/))[1];
 var experiments = exec("ls /proj/Reactor/exp").toString().split(/[\n]/);
 for (var i = 0; i < experiments.length; i++)
 	if (experiments[i].toLowerCase() == expname){
-		expname = "/proj/Reactor/exp/" + experiments[i] + "/tbdata/tbreport.log";
+		expname = experiments[i];
 		break;
 	}
 
 hosts.hosts.forEach(function(host){
     var ssh = "ssh thalley@" + host.IP + " ";
-    exec(ssh + "'pkill node'");
-    exec(ssh + "/proj/Reactor/software_load_balancer/emulab/" + expname + "/clientstartupscript.sh");
+    // exec(ssh + "'pkill node'");
+    exec(ssh + "'/proj/Reactor/software_load_balancer/emulab/" + expname + "/clientstartupscript.sh'");
 });
 
 // for each lb:
