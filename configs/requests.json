@@ -1,12 +1,12 @@
 {
   "requests" : [
     {
-      "TYPE" : "computation",
+      "TYPE" : "CPU",
       "CPU" : 5000,
       "MEM" : 2000
     },
     {
-      "TYPE" : "memory",
+      "TYPE" : "MEM",
       "CPU" : 2000,
       "MEM" : 5000
     }

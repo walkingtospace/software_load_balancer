@@ -12,6 +12,8 @@
 		"SOS" : "SOS",
 		"AVAILABLE" : "OK",
 		"NOT_AVAILABLE" : "NO",
+		"SEND" : "send",
+		"RESPOND" : "res"
 	},
 
 	"HOST" : {

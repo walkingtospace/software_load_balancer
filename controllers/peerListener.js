@@ -46,13 +46,13 @@ var peersize = peers.peers.length;
 })();
 
 function registerPeer() {
-	for(int i=0; i<peersize ; ++i) {
+	for(var i=0; i<peersize ; ++i) {
 		queue[peers.peers[i].IP] = peers.peers[i].innerport;
 	}
 }
 
 //broadcast S.O.S to other load balancers
-process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), CPU" : integer, "MEM" : integer} 
+process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU" : integer, "MEM" : integer} 
 	try {
 		m = JSON.parse(m);	
 
@@ -60,20 +60,17 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), CPU"
 			for(var key in queue)	{
 				if(queue[key].innerport !== undefined) {
 					var client = net.connect(queue[key].innerport, key, function(data) { //'connect' listener
-						console.log('[peerChecker] send S.O.S to' + this.remoteAddress;
+						console.log('[peerChecker] send S.O.S to' + this.remoteAddress);
 						
-						var obj = {"type" : constant.SERVER.SOS, "CPU" : m.CPU, "MEM" : m.MEM};
-						
-						this.write(JSON.stringify(obj, null, 2));
+						this.write(JSON.stringify(m, null, 2));
 
 						this.on('data', function(data) {  //got response from other peer
 							var json = JSON.parse(data); //{"CPU" : integer, "MEM" : integer}
 
 							if(peerResourceBuf.CPU > json.CPU && peerResourceBuf.MEM > json.MEM)  {//First-come, First-served
 								peerResourceBuf = json;
-								choosePeer(this.remoteAddress);
 
-								break;
+								choosePeer(this.remoteAddress);
 							} 
 						});
 					});

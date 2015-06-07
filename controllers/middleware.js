@@ -5,11 +5,11 @@ exports.redirector = function(IP, port, url, res, callback, info) {
 	request('http://' + IP + ':' + port + url , function(error, response, body) {
 		if(!error && response.statusCode == 200) {
 			
-			callback(res, response, info);
+			callback(res, response, info, IP);
 		} else {
 			console.log("[redirector] Host " + IP + " has some error in response");
 
-			callback(res, response);
+			callback(res, response, null, IP);
 		}		
 	});
 
