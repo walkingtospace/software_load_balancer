@@ -69,8 +69,7 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 
 						this.on('data', function(data) {  //got response from other peer
 							data = data.toString();
-			console.log("recv " + json);	
-							
+		
 							if(data === constant.SERVER.AVAILABLE) {
 								choosePeer(this.remoteAddress);
 							} else if(data === constant.SERVER.NOT_AVAILABLE){

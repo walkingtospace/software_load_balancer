@@ -26,7 +26,8 @@ function runPeerListener() {
 		peerListenerProcess = fork('./controllers/peerListener.js');
 
 		peerListenerProcess.on('message', function(data) { //data : string(IP)
-			data = data.toString();
+			data = data.toString(); 
+			
 
 		});
 
