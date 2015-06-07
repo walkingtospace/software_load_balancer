@@ -7,6 +7,7 @@ var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var peers = require('../configs/peers.json');
 var peersize = peers.peers.length;
+var IP = require("ip");
 
 
 (function() {
@@ -18,13 +19,15 @@ var peersize = peers.peers.length;
 
 	var server = net.createServer(function(socket) {
 		socket.on('data', function(data){
-			console.log("[slaveChecker] Receive S.O.S from " + this.remoteAddress);
+			console.log("[peerListener] Receive S.O.S from " + this.remoteAddress);
 
 			try {
 				data = JSON.parse(data);
-
+			console.log(data);	
 				if(data.type === constant.SERVER.SOS) { //response to S.O.S
+			console.log("in if");		
 					for(var key in myResource) { //first-come, first-served
+			console.log("in loop");				
 						if(myResource[key].CPU > data.CPU && myResource[key].MEM > data.MEM) {
 							socket.write(constant.SERVER.AVAILABLE);
 
@@ -56,16 +59,16 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 	try {
 		m = JSON.parse(m);	
 		if(m.type === constant.SERVER.SOS) {
-			for(var key in queue)	{
-				if(queue[key].innerport !== undefined) {
-					var client = net.connect(queue[key].innerport, key, function(data) { //'connect' listener
-						console.log('[peerChecker] send S.O.S to' + this.remoteAddress);
+			for(var key in queue)	{	
+				if(IP.address() != key && queue[key] !== undefined) { //except itself
+					var client = net.connect(queue[key], key, function(data) { //'connect' listener
+						console.log('[peerChecker] send S.O.S to ' + this.remoteAddress);
 						
 						this.write(JSON.stringify(m, null, 2));
 
 						this.on('data', function(data) {  //got response from other peer
 							var json = JSON.parse(data); //{"CPU" : integer, "MEM" : integer}
-
+			console.log("recv " + json);	
 							if(peerResourceBuf.CPU > json.CPU && peerResourceBuf.MEM > json.MEM)  {//First-come, First-served
 								peerResourceBuf = json;
 

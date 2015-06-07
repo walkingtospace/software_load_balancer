@@ -2,7 +2,7 @@
   "requests" : [
     {
       "TYPE" : "CPU",
-      "CPU" : 5000,
+      "CPU" : 15000,
       "MEM" : 2000
     },
     {
