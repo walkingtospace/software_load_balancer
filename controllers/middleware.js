@@ -4,7 +4,6 @@ exports.redirector = function(IP, port, url, res, callback, info) {
 	console.log(url);
 	request('http://' + IP + ':' + port + url , function(error, response, body) {
 		if(!error && response.statusCode == 200) {
-			
 			callback(res, response, info, IP);
 		} else {
 			console.log("[redirector] Host " + IP + " has some error in response");

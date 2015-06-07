@@ -1,7 +1,7 @@
 var net = require('net');
 var constant = require("../configs/constants.json");
 var queue = [];
-var myResource = {};
+var myResource = [];
 var peerResourceBuf = {};
 var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
@@ -55,7 +55,6 @@ function registerPeer() {
 process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU" : integer, "MEM" : integer} 
 	try {
 		m = JSON.parse(m);	
-
 		if(m.type === constant.SERVER.SOS) {
 			for(var key in queue)	{
 				if(queue[key].innerport !== undefined) {
@@ -84,12 +83,11 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 					});
 				} 
 			}	
-		} else if(m.CPU !== undefined && m.MEM !== undefined) {
-				myResource.push({"CPU" : m.CPU, "MEM" : m.MEM});			
+		} else if(m.IP !== undefined && m.CPU !== undefined && m.MEM !== undefined) {
+				myResource[m.IP] = {"CPU" : m.CPU, "MEM" : m.MEM};			
 		} else {
 			console.log('[peerChecker] myResource is undefined');
 		}
-		
 	} catch(e) {
 		console.log('[peerChecker] JSON parsing error');
 	}

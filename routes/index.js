@@ -13,7 +13,7 @@ var requests = require('../configs/requests.json');
 exports.connect = function(app) {
 	app.get('/*', resourcebase); //Redirect all requests to resourcebase
 	app.get('/route/roundrobin*', roundrobin); //basic
-	app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
+	//app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
 
 	initResource();
 	runPeerListener(); 
@@ -50,7 +50,7 @@ function initResource() {
 
 function getResource(request) { //param1 : {"type" : CPU||MEM, "workload" : integer}
 	for(var key in queue) {
-		if(queue[key].CPU > request.CPU && queue[key].mem > request.MEM) {
+		if(queue[key].CPU > request.CPU && queue[key].MEM > request.MEM) {
 
 			return key; //IP
 		}
@@ -59,13 +59,13 @@ function getResource(request) { //param1 : {"type" : CPU||MEM, "workload" : inte
 	return null;
 }
 
-function setResource(IP, request, type) {
-	if(type === constant.SERVER.SEND) {
-		queue[IP].CPU -= request.CPU;
-		queue[IP].MEM -= request.MEM;
-	} else if(type === constants.SERVER.RESPOND) {
-		queue[IP].CPU += request.CPU;
-		queue[IP].MEM += request.MEM;
+function setResource(IP, request, type) {	
+	if(type === constant.SERVER.SEND) {	
+		queue[IP].CPU = parseInt(queue[IP].CPU) - parseInt(request.CPU);
+		queue[IP].MEM = parseInt(queue[IP].MEM) - parseInt(request.MEM);
+	} else if(type === constant.SERVER.RESPOND) {
+		queue[IP].CPU = parseInt(queue[IP].CPU) + parseInt(request.CPU);
+		queue[IP].MEM = parseInt(queue[IP].MEM) + parseInt(request.MEM);
 	}
 }
 
@@ -85,7 +85,7 @@ function pipe(type, data) { //parent -> childprocess
 	} else if(type === constant.SERVER.RESOURCE) {
 		for(var key in queue) {
 			if(queue[key].CPU !== undefined && queue[key].MEM !== undefined) {
-				var obj = {"CPU" : queue[key].CPU, "MEM" : queue[key].MEM};
+				var obj = {"IP" : key, "CPU" : queue[key].CPU, "MEM" : queue[key].MEM};
 
 				peerListenerProcess.send(JSON.stringify(obj, null, 2));
 			}
@@ -139,14 +139,14 @@ function send(res, resFromHost, info, IP) {
 		res.status(200).send("Got error from host " + IP);
 
 	} else {
-		setResource(IP, queue[IP], constants.SERVER.RESPOND);
+		setResource(IP, info, constant.SERVER.RESPOND);
 
-		if(info !== undefined) {
+		if(info !== null) {
 			var header = "Successfully received response </br>";
 			var address = "IP: "+ IP + "</br>"; 
 			var resStatus = "RESPONSE CODE: " + resFromHost.statusCode + "</br>";
-			var CPU = "Used CPU usage: " + info.CPU + "%" + "</br>";
-			var MEM = "Used MEM usage: " + info.MEM + "%" + "</br>";
+			var CPU = "Used CPU usage: " + info.CPU + " unit" + "</br>";
+			var MEM = "Used MEM usage: " + info.MEM + " unit" + "</br>";
 			var remainCPU = "Remained CPU usage: " + queue[IP].CPU + " unit" + "</br>";
 			var remainMEM = "Remained MEM usage: " + queue[IP].MEM + "unit" + "</br>";
 
