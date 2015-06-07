@@ -3,7 +3,6 @@ var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var hostcount = 0;
 var middleware = require('../controllers/middleware');
-var failoverManager = require('../controllers/failoverManager');
 var intervalID = null;
 var fork = require('child_process').fork;
 var peerListenerProcess = null;
