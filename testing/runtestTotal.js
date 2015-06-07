@@ -34,7 +34,9 @@ for (i = 1; i <= 10; i++){
 		cpus[j] = 0;
 		for(k = 0; k < hostlen; k++){
 			var res = request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/end');
+			console.log(parseFloat(res.getBody().toString()));
 			cpus[j] += parseFloat(res.getBody().toString());
+		
 		}
 
 		cpus[j] = cpus[j]/hostlen;
@@ -57,8 +59,8 @@ for (i = 1; i <= 10; i++){
 	console.log("Avg:\t\t " + avg);
 	console.log("Median:\t\t " + median);
 	console.log("Std. Dev.:\t " + stddev);
-	console.log("CPU:\t " + cpu);
-	resultStr += numConn + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + cpu + "\n";
+	console.log("CPU:\t\t " + cpu);
+	resultStr += numConn + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + ',' + cpu + "\n";
 	
 }
 
@@ -70,15 +72,3 @@ fs.writeFile(expname + "resultsTotal", resultStr, function(err) {
 	}
 	console.log("The file was saved!");
 });
-
-// Send request to end-hosts to start measuring CPU
-function sendReq(host, req, j, callback) {
-	var url = 'http://' + host + ':' + constant.MEASUREMENT.PORT + '/' + req;
-	console.log(j + " : " + url);
-	request(url, function (error, response, res) {
-		if (!error && response.statusCode == 200) {
-			console.log("resv");
-			callback(res, j);
-		}
-	})
-}
