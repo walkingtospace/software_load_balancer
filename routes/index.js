@@ -9,6 +9,7 @@ var fork = require('child_process').fork;
 var peerListenerProcess = null;
 var queue = []; //host information
 var requests = require('../configs/requests.json');
+var reqStack = [];
 
 exports.connect = function(app) {
 	app.get('/*', resourcebase); //Redirect all requests to resourcebase
@@ -25,10 +26,16 @@ function runPeerListener() {
 	if(peerListenerProcess === null) {
 		peerListenerProcess = fork('./controllers/peerListener.js');
 
-		peerListenerProcess.on('message', function(data) { //data : string(IP)
-			data = data.toString(); 
-			
-
+		peerListenerProcess.on('message', function(data) { 
+			IP = data.toString();  //data : string(IP)
+			//TBD
+			if(reqStack.length > 0) {
+				var obj = reqStack.pop();
+				console.log("redirect to peer");
+				middleware.redirector(IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
+			} else {
+				console.log('[parent] stack underflow.');	
+			}
 		});
 
 		peerListenerProcess.on('error', function(data) {
@@ -41,7 +48,6 @@ function runPeerListener() {
 		});
 	}
 }
-
 
 function initResource() {
 	for(var i=0 ; i<hostsize ; ++i) {
@@ -125,13 +131,14 @@ function resourcebase(req, res, next) {
 		console.log("[CPU/MEM] Redirect traffic to : " + nextHostIP); 
 
 		setResource(nextHostIP, unit, constant.SERVER.SEND);
-		middleware.redirector(nextHostIP, queue[nextHostIP].port, req.url, res, send,unit);
+		middleware.redirector(nextHostIP, queue[nextHostIP].port, req.url, res, send, unit);
 	} else {
 		console.log("[parent] No available resources : send S.O.S");
 
 		var obj = {"type" : constant.SERVER.SOS, "CPU" : unit.CPU, "MEM" : unit.MEM};
 
 		pipe(constant.SERVER.SOS, obj);
+		reqStack.push({"url" : req.url, "res" : res, "unit" : unit}); 
 	}
 }
 
