@@ -15,7 +15,7 @@ set HA [$ns node]
 tb-set-node-os $HA ubuntu-12-meercat
 tb-set-node-startcmd $HA "/proj/Reactor/software_load_balancer/emulab/SingleLBTest/hastartupscript.sh"
 
-set maxnodes 5
+set maxnodes 10
 for {set i 1} {$i <= $maxnodes} {incr i} {
     set node($i) [$ns node]
     tb-set-node-os $node($i) ubuntu-12-meercat
