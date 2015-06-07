@@ -2,7 +2,6 @@ var net = require('net');
 var constant = require("../configs/constants.json");
 var queue = [];
 var myResource = [];
-var peerResourceBuf = {};
 var hosts = require('../configs/hosts.json');
 var hostsize = hosts.hosts.length;
 var peers = require('../configs/peers.json');
@@ -15,24 +14,26 @@ var IP = require("ip");
 
 	registerPeer();
 
-	peerResourceBuf = {"IP" : null, "CPU" : constant.HOST.INIT_CPU, "MEM" : constant.HOST.INIT_MEM}; //init
-
 	var server = net.createServer(function(socket) {
 		socket.on('data', function(data){
 			console.log("[peerListener] Receive S.O.S from " + this.remoteAddress);
 
 			try {
 				data = JSON.parse(data);
-			console.log(data);	
+				var isAvailable = false;
+
 				if(data.type === constant.SERVER.SOS) { //response to S.O.S
-			console.log("in if");		
 					for(var key in myResource) { //first-come, first-served
-			console.log("in loop");				
 						if(myResource[key].CPU > data.CPU && myResource[key].MEM > data.MEM) {
 							socket.write(constant.SERVER.AVAILABLE);
+							isAvailable = true;
 
 							break;
 						}
+					}
+
+					if(isAvailable === false) {
+						socket.write(constant.SERVER.NOT_AVAILABLE);
 					}
 				}
 			} catch(e) {
@@ -67,13 +68,14 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 						this.write(JSON.stringify(m, null, 2));
 
 						this.on('data', function(data) {  //got response from other peer
-							var json = JSON.parse(data); //{"CPU" : integer, "MEM" : integer}
+							data = data.toString();
 			console.log("recv " + json);	
-							if(peerResourceBuf.CPU > json.CPU && peerResourceBuf.MEM > json.MEM)  {//First-come, First-served
-								peerResourceBuf = json;
-
+							
+							if(data === constant.SERVER.AVAILABLE) {
 								choosePeer(this.remoteAddress);
-							} 
+							} else if(data === constant.SERVER.NOT_AVAILABLE){
+								//wait other peer
+							}
 						});
 					});
 
