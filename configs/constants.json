@@ -6,7 +6,7 @@
 		"TIMEFORHOST" : 2000,
 		"TIME_FOR_SLAVE" : 1000,
 		"TIME_FOR_MASTERCHECK" : 5000,
-		"TIME_FOR_HOSTCHECK" : 10000,
+		"TIME_FOR_HOSTCHECK" : 1000,
 		"CPU" : "CPU",
 		"MEM" : "MEM",
 		"NO_CPU_RESOURCE" : "NO_CPU_RESOURCE",
@@ -28,5 +28,10 @@
 		"MATRIXSIZE" : 3000,
 		"MEMORYDELAY" : 0,
 		"MAXMEMUSE" : 10
+ 	},
+
+ 	"MEASUREMENT" : {
+ 		"PORT" : 40001,
+ 		"NOMEASUREMENT" : "Measurement has not been started yet"
  	}
 }
