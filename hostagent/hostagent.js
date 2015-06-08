@@ -31,10 +31,10 @@ function roundrobin(req, res, next) {
   else
     host = hosts.hosts[hostcount];
   console.log("[roundrobin] Redirect traffic to : " + host.IP + " port:" + host.port); 
-  middleware.redirector(host.IP, host.port, reqURL, res, send);
+  middleware.redirector(null, host.IP, host.port, reqURL, res, send);
 }
 
-function send(res, resFromHost, info) {
+function send(res, resFromHost, info, type) {
   if(resFromHost === undefined) {
     res.status(200).send("Got error from host " + host.IP + " port:" + host.port);
 
