@@ -27,12 +27,23 @@ function runPeerListener() {
 
 		peerListenerProcess.on('message', function(data) { 
 			IP = data.toString();  //data : string(IP)
-			//TBD
+		
 			if(reqStack.length > 0) {
 				var obj = reqStack.pop();
 				console.log("redirect to peer: " + IP);
 
-				middleware.redirector(constant.SERVER.REDIRECTION, IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
+				if(IP !== constant.SERVER.NOT_AVAILABLE) {
+					middleware.redirector(constant.SERVER.REDIRECTION, IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
+				} else {
+					//choose the first end-host relentlessly
+					IP = hosts.hosts[0].IP;
+					var port = hosts.hosts[0].port;
+					
+					console.log("[CPU/MEM] Redirect traffic to : " + IP); 
+					setResource(IP, obj.unit, constant.SERVER.SEND);
+
+					middleware.redirector(constant.SERVER.ORIGIN, IP, port, obj.url, obj.res, send, obj.unit);
+				}
 			} else {
 				console.log('[parent] stack underflow.');	
 			}
@@ -137,6 +148,7 @@ function resourcebase(req, res, next) {
 	if(nextHostIP !== null) {
 		console.log("[CPU/MEM] Redirect traffic to : " + nextHostIP); 
 		setResource(nextHostIP, unit, constant.SERVER.SEND);
+
 		middleware.redirector(constant.SERVER.ORIGIN, nextHostIP, queue[nextHostIP].port, req.url, res, send, unit);
 	} else {
 		console.log("[parent] No available resources : send S.O.S");
@@ -169,7 +181,7 @@ function send(res, resFromHost, info, IP, type) {
 				var CPU = "My peer " + IP + " used CPU usage: " + info.CPU + " unit" + "</br>";
 				var MEM = "My peer " + IP + " used MEM usage: " + info.MEM + " unit" + "</br>";
 			} else {
-				//
+				//Shouldn't be here
 			}
 
 			res.status(200).send(header + address + resStatus + CPU + MEM+ remainCPU + remainMEM);

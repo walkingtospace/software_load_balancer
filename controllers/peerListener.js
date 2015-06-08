@@ -44,8 +44,6 @@ var IP = require("ip");
 
 	server.on('connection', function(socket) {
 		console.log("[peerListener] a peer is connected : " + socket.remoteAddress);
-
-		//queue.push(socket);
 	});
 })();
 
@@ -73,7 +71,7 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 							if(data === constant.SERVER.AVAILABLE) {
 								choosePeer(this.remoteAddress);
 							} else if(data === constant.SERVER.NOT_AVAILABLE){
-								//wait other peer
+								choosePeer(constant.SERVER.NOT_AVAILABLE);
 							}
 						});
 					});
@@ -82,8 +80,9 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 						console.log('[peerChecker] ' + this.remoteAddress + ' disconnected');
 					});
 
-					client.on('error', function() {
-						//console.log('err');
+					client.on('error', function(data) {
+						console.log('[peerChecker]'+ data);
+						choosePeer(constant.SERVER.NOT_AVAILABLE);
 					});
 				} 
 			}	
@@ -97,7 +96,7 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 	}
 });
 
-function choosePeer(IP) {
+function choosePeer(msg) {
 	
-	process.send(IP);
+	process.send(msg);
 }
