@@ -74,6 +74,8 @@ function createJSONfile(nodes, nodetype, port){
 
 createJSONfile(hostnames, "hosts", constant.CLIENT.PORT + '", "healthport" : "' + constant.HOST.PORT);
 createJSONfile(loadbalancers, "slaves", constant.SERVER.PORT + '", "innerport" : "' + constant.SERVER.INNERPORT);
+createJSONfile(loadbalancers, "peers", constant.SERVER.PORT + '", "innerport" : "' + constant.SERVER.INNERPORT);
 createJSONfile(hostagent, "hostagent", constant.SERVER.PORT);
+
 
 

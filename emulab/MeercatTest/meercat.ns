@@ -7,12 +7,20 @@ source tb_compat.tcl
 set Generator [$ns node]
 tb-set-node-os $Generator ubuntu-12-meercat
 
+# Host Agent
+set HA [$ns node]
+tb-set-node-os $HA ubuntu-12-meercat
+tb-set-node-startcmd $HA "/proj/Reactor/software_load_balancer/emulab/MeercatTest/hastartupscript.sh"
+
 # Load Balancers
+set LB-1 [$ns node]
+tb-set-node-os $LB-1 ubuntu-12-meercat
+tb-set-node-startcmd $LB-1 "/proj/Reactor/software_load_balancer/emulab/MeercatTest/master.sh"
 set maxlbs 2
-for {set j 1} {$i <= $maxlbs} {incr i} {
+for {set i 2} {$i <= $maxlbs} {incr i} {
     set LB($i) [$ns node]
     tb-set-node-os $LB($i) ubuntu-12-meercat
-    tb-set-node-startcmd $LB($i) "/proj/Reactor/software_load_balancer/emulab/lbstartupscript.sh"
+    tb-set-node-startcmd $LB($i) "/proj/Reactor/software_load_balancer/emulab/MeercatTest/slave.sh"
 }
 
 # End-hosts
@@ -20,7 +28,7 @@ set maxnodes 10
 for {set i 1} {$i <= $maxnodes} {incr i} {
     set node($i) [$ns node]
     tb-set-node-os $node($i) ubuntu-12-meercat
-    tb-set-node-startcmd $node($i) "/proj/Reactor/software_load_balancer/emulab/clientstartupscript.sh"
+    tb-set-node-startcmd $node($i) "/proj/Reactor/software_load_balancer/emulab/MeercatTest/clientstartupscript.sh"
 }
 
 $ns rtproto Static
