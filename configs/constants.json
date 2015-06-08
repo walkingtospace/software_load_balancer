@@ -32,5 +32,10 @@
 		"MATRIXSIZE" : 3000,
 		"MEMORYDELAY" : 0,
 		"MAXMEMUSE" : 10
+ 	},
+
+ 	"MEASUREMENT" : {
+ 		"PORT" : 40001,
+ 		"NOMEASUREMENT" : "Measurement has not been started yet"
  	}
 }
