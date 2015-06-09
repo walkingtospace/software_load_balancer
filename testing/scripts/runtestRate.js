@@ -4,20 +4,25 @@ var fs = require('fs');
 var hostagents = require('../configs/hostagent.json');
 var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
-var increase = 50; // requests per second
+var increase = 10; // requests per second
 var timeout = 10; //in seconds
-var iterations = 1;
+var testIterations = 1;
+var iterations = 10;
 if(process.argv.length > 2)
-	iterations = process.argv[2].toString();
+	increase = parseInt(process.argv[2])/iterations;
+if(process.argv.length > 3)
+	rate = parseInt(process.argv[3]);
+if(process.argv.length > 4)
+	testIterations = parseInt(process.argv[4]);
 
 var resultStr = "Requsts,Time,Min,Max,Avg,Median,Std.Dev.\n";
-for (i = 1; i <= 10; i++){
-	numConn = i * increase;
-	var result = new Array(iterations);
-	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + numConn + " --wlog Y,wlog.log";
+for (i = 1; i <= iterations; i++){
+	var rate = i * increase;
+	var result = new Array(testIterations);
+	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 	// var httperf = "httperf --server thalley.com --hog ";
 	console.log(httperf);
-	for(j = 0; j < iterations; j++){
+	for(j = 0; j < testIterations; j++){
 		var httperfRes = exec(httperf).toString();
 		var time = httperfRes.split(/[\n]/)[3].split(/[ ]/)[8];
 		result[j] = parseFloat(time);
@@ -34,12 +39,12 @@ for (i = 1; i <= 10; i++){
 	console.log("Avg:\t\t " + avg);
 	console.log("Median:\t\t " + median);
 	console.log("Std. Dev.:\t " + stddev);
-	resultStr += numConn + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
+	resultStr += rate + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
 }
 
 // Save to file: [expName]results
 var expname = (exec("hostname").toString().split(/[.]/))[1];
-fs.writeFile(expname + "results", result, function(err) {
+fs.writeFile("../results/" + expname + "Rate", resultStr, function(err) {
 	if(err) {
 		return console.log(err);
 	}

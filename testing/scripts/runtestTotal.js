@@ -2,38 +2,44 @@ var exec = require('child_process').execSync;
 var math = require('mathjs');
 var fs = require('fs');
 var request = require("sync-request");
-var constant = require('../configs/constants.json');
-var hosts = require('../configs/hosts.json');
+var constant = require('../../configs/constants.json');
+var hosts = require('../../configs/hosts.json');
 var hostlen = hosts.hosts.length;
-var hostagents = require('../configs/hostagent.json');
+var hostagents = require('../../configs/hostagent.json');
 var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
 var increase = 20; // requests per second
 var timeout = 10; //in seconds
-var iterations = 1;
+var testIterations = 1;
+var iterations = 10;
 if(process.argv.length > 2)
-	iterations = process.argv[2].toString();
+	increase = parseInt(process.argv[2])/iterations;
+if(process.argv.length > 3)
+	rate = parseInt(process.argv[3]);
+if(process.argv.length > 4)
+	testIterations = parseInt(process.argv[4]);
 
 var resultStr = "Requsts,Time,Min,Max,Avg,Median,Std.Dev.,CPU\n";
-for (i = 1; i <= 10; i++){
+for (i = 1; i <= iterations; i++){
 	numConn = i * increase;
-	var result = new Array(iterations);
-	var cpus = new Array(iterations);
-	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + increase + " --wlog Y,wlog.log";
+	var result = new Array(testIterations);
+	var cpus = new Array(testIterations);
+	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 	// var httperf = "httperf --server localhost --uri / --port 3000 --num-conn 100 --rate 50";
 	console.log(httperf);
-	for(j = 0; j < iterations; j++){
+	for(j = 0; j < testIterations; j++){
 		// Start measuring CPU
 		for(k = 0; k < hostlen; k++)
 			request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/start');
 
 		// Send requests
 		var httperfRes = exec(httperf).toString();
+		var time = Date.now();
 
 		// Get CPU measurements
 		cpus[j] = 0;
 		for(k = 0; k < hostlen; k++){
-			var res = request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/end');
+			var res = request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/end' + time);
 			console.log(parseFloat(res.getBody().toString()));
 			cpus[j] += parseFloat(res.getBody().toString());
 		
@@ -66,7 +72,7 @@ for (i = 1; i <= 10; i++){
 
 // Save to file: [expName]results
 var expname = (exec("hostname").toString().split(/[.]/))[1];
-fs.writeFile(expname + "resultsTotal", resultStr, function(err) {
+fs.writeFile("../results/" + expname + "Total", resultStr, function(err) {
 	if(err) {
 		return console.log(err);
 	}
