@@ -13,6 +13,10 @@ app.get('/', function (req, res) {
     res.send('Hello from server');
 });
 
+// Add a basic route – index page
+app.get('/route/roundrobin', function (req, res) {
+    res.send('Hello from server');
+});
 
 //CPU heavy task
 app.get('/compute', function (req, res) {

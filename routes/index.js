@@ -11,9 +11,9 @@ var requests = require('../configs/requests.json');
 var reqStack = [];
 
 exports.connect = function(app) {
-	app.get('/*', resourcebase); //Redirect all requests to resourcebase
+	//app.get('/*', resourcebase); //Redirect all requests to resourcebase
 	app.get('/route/roundrobin*', roundrobin); //basic
-	//app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
+	app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
 
 	initResource();
 	runPeerListener(); 
@@ -34,15 +34,17 @@ function runPeerListener() {
 
 				if(IP !== constant.SERVER.NOT_AVAILABLE) {
 					middleware.redirector(constant.SERVER.REDIRECTION, IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
-				} else {
-					//choose the first end-host relentlessly
-					IP = hosts.hosts[0].IP;
-					var port = hosts.hosts[0].port;
-					
-					console.log("[CPU/MEM] Redirect traffic to : " + IP); 
-					setResource(IP, obj.unit, constant.SERVER.SEND);
+				} else {   //Forced-round-robin
+					if(hostcount >= (hostsize-1)) {
+						hostcount = 0;
+					} else {
+						hostcount++;
+					}	
 
-					middleware.redirector(constant.SERVER.ORIGIN, IP, port, obj.url, obj.res, send, obj.unit);
+					//redirect requests to host
+				 	console.log("[Forced-roundrobin] Redirect traffic to : " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port); 
+
+					middleware.redirector(constant.SERVER.ORIGIN, hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, obj.url, obj.res, send, null);
 				}
 			} else {
 				console.log('[parent] stack underflow.');	
@@ -116,6 +118,13 @@ function index(req, res, next) {
 }
 
 function roundrobin(req, res, next) {
+	if(req.url === "/favicon.ico") {
+	 	res.writeHead(200, {'Content-Type': 'image/x-icon'} );
+          res.end(/* icon content here */);
+
+          return;
+	}
+
 	if(hostcount >= (hostsize-1)) {
 		hostcount = 0;
 	} else {
@@ -124,8 +133,8 @@ function roundrobin(req, res, next) {
 
 	//redirect requests to host
  	console.log("[roundrobin] Redirect traffic to : " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port); 
-
-	middleware.redirector(constant.SERVER.ORIGIN, hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, req.url, res, send);
+console.log(req.url);
+	middleware.redirector(constant.SERVER.ORIGIN, hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, req.url, res, send, null);
 }
 
 function resourcebase(req, res, next) {
@@ -156,7 +165,7 @@ function resourcebase(req, res, next) {
 		var obj = {"type" : constant.SERVER.SOS, "CPU" : unit.CPU, "MEM" : unit.MEM};
 
 		pipe(constant.SERVER.SOS, obj);
-		reqStack.push({"url" : req.url, "res" : res, "unit" : unit}); 
+		reqStack.push({"url" : req.url, "res" : res, "req": req, "unit" : unit}); 
 	}
 }
 
@@ -165,7 +174,7 @@ function send(res, resFromHost, info, IP, type) {
 		res.status(200).send("Got error from host " + IP);
 
 	} else {
-		if(info !== null) {
+		if(info !== null && info !== undefined) {
 			var header = "Successfully received response </br>";
 			var address = "IP: "+ IP + "</br>"; 
 			var resStatus = "RESPONSE CODE: " + resFromHost.statusCode + "</br>";
