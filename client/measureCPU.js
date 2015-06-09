@@ -30,7 +30,7 @@ function endMeasurement(){
 
 function addMeasurement(){
   var cpu = endMeasurement();
-  var time = Date.now()/1000 | 0;
+  var time = Date.now();
   measurments.push(cpu);
   timestamps.push(time);
 }
@@ -72,9 +72,10 @@ app.get('/end*', function (req, res) {
     clearInterval(interval);
     var url = req.originalUrl;
     var time = parseInt(url.substring(4)); // Get timestamp
-    var measurement = findNearest(time);
-    console.log(measurement.toString());
-    res.send(measurement.toString());
+    findNearest(time, function(measurement){
+      console.log("CPU Usage: " + measurement.toString());
+      res.send(measurement.toString());
+    });
   }
 });
 
@@ -88,10 +89,11 @@ var port = constant.MEASUREMENT.PORT;
 app.listen(port);
 
 //Find measurement based on timstamp
-function findNearest(time){
+function findNearest(time, callback){
   for(i = 0; i < timestamps.length; i++)
     if (timestamps[i] > time){
-      return measurments[i];
+      callback(measurments[i]);
+      break;
     }
 }
 // startMeasure();
