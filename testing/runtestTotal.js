@@ -29,11 +29,12 @@ for (i = 1; i <= 10; i++){
 
 		// Send requests
 		var httperfRes = exec(httperf).toString();
+		var time = Date.now()/1000 | 0;
 
 		// Get CPU measurements
 		cpus[j] = 0;
 		for(k = 0; k < hostlen; k++){
-			var res = request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/end');
+			var res = request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/end' + time);
 			console.log(parseFloat(res.getBody().toString()));
 			cpus[j] += parseFloat(res.getBody().toString());
 		
