@@ -1,7 +1,8 @@
 var exec = require('child_process').execSync;
 var math = require('mathjs');
 var fs = require('fs');
-var request = require("sync-request");
+var syncRequest = require("sync-request");
+var request = require("request");
 var constant = require('../../configs/constants.json');
 var hosts = require('../../configs/hosts.json');
 var hostlen = hosts.hosts.length;
@@ -10,6 +11,7 @@ var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
 var increase = 20; // requests per second
 var timeout = 10; //in seconds
+var rate = 20;
 var testIterations = 1;
 var iterations = 10;
 if(process.argv.length > 2)
@@ -31,17 +33,24 @@ for (i = 1; i <= iterations; i++){
 	for(j = 0; j < testIterations; j++){
 		console.log("Iteration: " + j);
 		// Start measuring CPU
-		for(k = 0; k < hostlen; k++)
-			request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/start');
+		console.log("Sending start measures to hosts");
+		for(k = 0; k < hostlen; k++){
+			process.stdout.write(k + ", ");
+			syncRequest('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/start' + (hostlen - k));
+		}
 
 		// Send requests
+		console.log("\nSending requests");
 		var httperfRes = exec(httperf).toString();
 		var time = Date.now();
 
 		// Get CPU measurements
+		console.log("Getting CPU measurements");
 		cpus[j] = 0;
 		for(k = 0; k < hostlen; k++){
-			var res = request('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/end' + time);
+			//Block request with timestamp
+			process.stdout.write(k + ", ");
+			var res = syncRequest('GET', 'http://' + hosts.hosts[k].IP + ':' + constant.MEASUREMENT.PORT + '/end' + time);
 			cpus[j] += parseFloat(res.getBody().toString());
 		
 		}
@@ -52,7 +61,7 @@ for (i = 1; i <= iterations; i++){
 		result[j] = parseFloat(time);
 	}
 
-	console.log(result);
+	console.log('\n' + result);
 	console.log(cpus);
 	var min = math.min(result);
 	var avg = math.mean(result);

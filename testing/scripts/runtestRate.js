@@ -23,6 +23,7 @@ for (i = 1; i <= iterations; i++){
 	// var httperf = "httperf --server thalley.com --hog ";
 	console.log(httperf);
 	for(j = 0; j < testIterations; j++){
+		console.log("Iteration: " + j);
 		var httperfRes = exec(httperf).toString();
 		var time = httperfRes.split(/[\n]/)[3].split(/[ ]/)[8];
 		result[j] = parseFloat(time);
