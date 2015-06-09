@@ -24,7 +24,7 @@ for (i = 1; i <= iterations; i++){
 	numConn = i * increase;
 	var result = new Array(testIterations);
 	var cpus = new Array(testIterations);
-	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + increase + " --wlog Y,wlog.log";
+	var httperf = "httperf --server " + hostagent.IP + " --port " + hostagent.port + " --num-conn " + numConn + " --rate " + rate + " --wlog Y,wlog.log";
 	// var httperf = "httperf --server localhost --uri / --port 3000 --num-conn 100 --rate 50";
 	console.log(httperf);
 	for(j = 0; j < testIterations; j++){
@@ -72,7 +72,7 @@ for (i = 1; i <= iterations; i++){
 
 // Save to file: [expName]results
 var expname = (exec("hostname").toString().split(/[.]/))[1];
-fs.writeFile("../results/" + expname + "resultsTotal", resultStr, function(err) {
+fs.writeFile("../results/" + expname + "Total", resultStr, function(err) {
 	if(err) {
 		return console.log(err);
 	}
