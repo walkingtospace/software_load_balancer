@@ -29,7 +29,7 @@ for (i = 1; i <= 10; i++){
 
 		// Send requests
 		var httperfRes = exec(httperf).toString();
-		var time = Date.now()/1000 | 0;
+		var time = Date.now();
 
 		// Get CPU measurements
 		cpus[j] = 0;
