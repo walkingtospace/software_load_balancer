@@ -1,3 +1,3 @@
 cd /proj/Reactor/software_load_balancer
-sleep 60s
+sleep 10s
 node run
