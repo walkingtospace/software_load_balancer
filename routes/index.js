@@ -11,7 +11,7 @@ var requests = require('../configs/requests.json');
 var reqStack = [];
 
 exports.connect = function(app) {
-	//app.get('/*', resourcebase); //Redirect all requests to resourcebase
+	app.get('/*', resourcebase); //Redirect all requests to resourcebase
 	app.get('/route/roundrobin*', roundrobin); //basic
 	app.get('/route/resourcebase/:type*', resourcebase); //CPU,MEMORY-based scheduling
 
