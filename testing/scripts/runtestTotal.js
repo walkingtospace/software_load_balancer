@@ -72,7 +72,7 @@ for (i = 1; i <= iterations; i++){
 
 // Save to file: [expName]results
 var expname = (exec("hostname").toString().split(/[.]/))[1];
-fs.writeFile(expname + "resultsTotal", resultStr, function(err) {
+fs.writeFile("../results/" + expname + "resultsTotal", resultStr, function(err) {
 	if(err) {
 		return console.log(err);
 	}
