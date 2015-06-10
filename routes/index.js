@@ -35,12 +35,6 @@ function runPeerListener() {
 				if(IP !== constant.SERVER.NOT_AVAILABLE) {
 					middleware.redirector(constant.SERVER.REDIRECTION, IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
 				} else {   //Forced-round-robin
-					if(hostcount >= (hostsize-1)) {
-						hostcount = 0;
-					} else {
-						hostcount++;
-					}	
-
 					//redirect request to end-host based on greedy algorithm (choose the least loaded end-host)
 					var nextHostIP = getResourceOnGreedy();
 
@@ -48,7 +42,7 @@ function runPeerListener() {
 						console.log("[Greedy] Redirect traffic to : " + nextHostIP); 
 						setResource(nextHostIP, obj.unit, constant.SERVER.SEND);
 
-						middleware.redirector(constant.SERVER.ORIGIN, nextHostIP, queue[nextHostIP].port, obj.url, obj.res, send, obj.unit, null);
+						middleware.redirector(constant.SERVER.ORIGIN, nextHostIP, queue[nextHostIP].port, obj.url, obj.res, send, obj.unit);
 					} else {
 						//impossible to be here.
 					}
@@ -88,11 +82,11 @@ function getResource(request) { //param1 : {"type" : CPU||MEM, "workload" : inte
 }
 
 function getResourceOnGreedy() {
-	var tempCPU = 999999;
+	var tempCPU = 0;
 	var tempKey = null;
 
 	for(var key in queue) {
-		if(queue[key].CPU < tempCPU) {
+		if(queue[key].CPU > tempCPU) {
 			tempKey = key;
 			tempCPU = queue[key].CPU;
 		}
@@ -155,7 +149,7 @@ function roundrobin(req, res, next) {
 
 	//redirect requests to host
  	console.log("[roundrobin] Redirect traffic to : " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port); 
-console.log(req.url);
+
 	middleware.redirector(constant.SERVER.ORIGIN, hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, req.url, res, send, null);
 }
 
