@@ -59,9 +59,11 @@ function cpuAverage() {
 
 
 var app = express();
-app.get('/start', function (req, res) {
+app.get('/start*', function (req, res) {
   console.log("started measurement");
-    startMeasurement();
+    var url = req.originalUrl;
+    var number = parseInt(url.substring(6)); // Get timestamp
+    setTimeout(startMeasurement, number * 100);
     console.log(startMeasure);
     res.send("Started");
 });
