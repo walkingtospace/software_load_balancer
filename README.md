@@ -26,6 +26,11 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the resear
 - CPU usage-based redirection request : "http://xxx.xxx.xxx.xxx/route/resourcebase/CPU" into url, then it shows the load balancing results by hosts' CPU usage
 - MEM usage-based redirection request : "http://xxx.xxx.xxx.xxx[rootaddress]/route/resourcebase/MEM" into url, then it shows the load balancing results by hosts' MEM usage
 
+## Two types of approaches
+- Master-slaves model (master branch) : As explained above
+- PeertoPeer model (peertopeer branch) : Unlike master-slaves model, it estmates resource of end-hosts and uses grouped load balancing. Therefore, each peer do care a group of end-hosts only and it estimates how much end-hosts use CPU/MEM resource by based on contents recognition since it is layer 7 load balancer. By using estimation, it gets much fast redirection speed than master-slaves by our experiments.
+
+
 ## Performance Measurement
 - We have used httperf to measure the performance of our load load balancer by sending a number of requests and measuring the completion time
 - Preliminary results show that measuing CPU and Memory usage on the servers compared to doing simple roundrobin decreases runtime by approximately 34% on average
