@@ -58,6 +58,12 @@ process.on('message', function(m) { //param1 1) {"type" : string(RESOURCE), "CPU
 	try {
 		m = JSON.parse(m);	
 		if(m.type === constant.SERVER.SOS) {
+			if(Object.keys(queue).length <= 1) { //itsef or nothing
+				choosePeer(constant.SERVER.NOT_AVAILABLE);
+
+				return;
+			}
+
 			for(var key in queue)	{	
 				if(IP.address() != key && queue[key] !== undefined) { //except itself
 					var client = net.connect(queue[key], key, function(data) { //'connect' listener
