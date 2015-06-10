@@ -1,7 +1,7 @@
 var exec = require('child_process').execSync;
 var math = require('mathjs');
 var fs = require('fs');
-var hostagents = require('../configs/hostagent.json');
+var hostagents = require('../../configs/hostagent.json');
 var hostagent = hostagents.hostagent[0];
 var numConn = 100; // Total amount of requests to send
 var increase = 10; // requests per second
@@ -9,9 +9,9 @@ var timeout = 10; //in seconds
 var testIterations = 1;
 var iterations = 10;
 if(process.argv.length > 2)
-	increase = parseInt(process.argv[2])/iterations;
+	numConn = parseInt(process.argv[2]);
 if(process.argv.length > 3)
-	rate = parseInt(process.argv[3]);
+	increase = parseInt(process.argv[3])/iterations;
 if(process.argv.length > 4)
 	testIterations = parseInt(process.argv[4]);
 
@@ -23,6 +23,7 @@ for (i = 1; i <= iterations; i++){
 	// var httperf = "httperf --server thalley.com --hog ";
 	console.log(httperf);
 	for(j = 0; j < testIterations; j++){
+		console.log("Iteration: " + j);
 		var httperfRes = exec(httperf).toString();
 		var time = httperfRes.split(/[\n]/)[3].split(/[ ]/)[8];
 		result[j] = parseFloat(time);
