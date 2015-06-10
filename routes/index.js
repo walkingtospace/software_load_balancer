@@ -113,6 +113,8 @@ function getResourceUnit(type) {
 
 		return {"CPU" : requests.requests[1].CPU, "MEM" : requests.requests[1].MEM};
 	}
+	else
+		return {"CPU" : requests.requests[2].CPU, "MEM" : requests.requests[2].MEM};
 }
 
 function pipe(type, data) { //parent -> childprocess
