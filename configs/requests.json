@@ -9,6 +9,11 @@
       "TYPE" : "MEM",
       "CPU" : 2000,
       "MEM" : 5000
+    },
+    {
+      "TYPE" : "STATIC",
+      "CPU" : 1,
+      "MEM" : 1
     }
   ]	
 }

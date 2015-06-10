@@ -25,7 +25,7 @@ function runPeerListener() {
 	if(peerListenerProcess === null) {
 		peerListenerProcess = fork('./controllers/peerListener.js');
 
-		peerListenerProcess.on('message', function(data) { 
+		peerListenerProcess.on('message', function(data) {
 			IP = data.toString();  //data : string(IP)
 		
 			if(reqStack.length > 0) {
@@ -169,9 +169,11 @@ function resourcebase(req, res, next) {
 
 	if(req.url === "/memory") {
 		req.params.type = constant.SERVER.MEM;
-	} else {
+	} else if(req.url === "/compute"){
 		req.params.type = constant.SERVER.CPU;
 	}
+	else
+		req.params.type = constant.SERVER.STATIC;	
 
 	var unit = getResourceUnit(req.params.type);
 	var nextHostIP = getResource(unit);
