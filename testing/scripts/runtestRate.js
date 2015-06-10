@@ -15,7 +15,7 @@ if(process.argv.length > 3)
 if(process.argv.length > 4)
 	testIterations = parseInt(process.argv[4]);
 
-var resultStr = "Requsts,Time,Min,Max,Avg,Median,Std.Dev.\n";
+var resultStr = "Rate,Time,Min,Max,Avg,Median,Std.Dev.\n";
 for (i = 1; i <= iterations; i++){
 	var rate = i * increase;
 	var result = new Array(testIterations);
