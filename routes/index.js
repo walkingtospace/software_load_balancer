@@ -41,10 +41,18 @@ function runPeerListener() {
 						hostcount++;
 					}	
 
-					//redirect requests to host
-				 	console.log("[Forced-roundrobin] Redirect traffic to : " + hosts.hosts[hostcount].IP + " port:" + hosts.hosts[hostcount].port); 
+					//redirect request to end-host based on greedy algorithm (choose the least loaded end-host)
+					var nextHostIP = getResourceOnGreedy();
 
-					middleware.redirector(constant.SERVER.ORIGIN, hosts.hosts[hostcount].IP, hosts.hosts[hostcount].port, obj.url, obj.res, send, null);
+					if(nextHostIP !== null) {
+						console.log("[Greedy] Redirect traffic to : " + nextHostIP); 
+						setResource(nextHostIP, obj.unit, constant.SERVER.SEND);
+
+						middleware.redirector(constant.SERVER.ORIGIN, nextHostIP, queue[nextHostIP].port, obj.url, obj.res, send, obj.unit, null);
+					} else {
+						//impossible to be here.
+					}
+
 				}
 			} else {
 				console.log('[parent] stack underflow.');	
@@ -77,6 +85,20 @@ function getResource(request) { //param1 : {"type" : CPU||MEM, "workload" : inte
 	}
 
 	return null;
+}
+
+function getResourceOnGreedy() {
+	var tempCPU = 999999;
+	var tempKey = null;
+
+	for(var key in queue) {
+		if(queue[key].CPU < tempCPU) {
+			tempKey = key;
+			tempCPU = queue[key].CPU;
+		}
+	}
+
+	return tempKey;
 }
 
 function setResource(IP, request, type) {	
