@@ -34,7 +34,7 @@ function runPeerListener() {
 
 				if(IP !== constant.SERVER.NOT_AVAILABLE) {
 					middleware.redirector(constant.SERVER.REDIRECTION, IP, constant.SERVER.PORT, obj.url, obj.res, send, obj.unit);
-				} else {   //Forced-round-robin
+				} else {  
 					//redirect request to end-host based on greedy algorithm (choose the least loaded end-host)
 					var nextHostIP = getResourceOnGreedy();
 
@@ -82,7 +82,7 @@ function getResource(request) { //param1 : {"type" : CPU||MEM, "workload" : inte
 }
 
 function getResourceOnGreedy() {
-	var tempCPU = 0;
+	var tempCPU = -9999999999999;
 	var tempKey = null;
 
 	for(var key in queue) {
