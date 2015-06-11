@@ -6,6 +6,7 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the resear
 ##Directory Structure
 - Directory naming and structure follow the MVC pattern 
 - Initiating file : runs.js at root ("sudo node run")
+- Switch between branches to see source code for the master-slave model (master) and the peer-to-peer model (peertopeer)
 
 ## Features
 - Loadbalancing: A Meercat communicate with all other n-1 Meercats to distribute traffic efficiently
@@ -33,7 +34,7 @@ routing / load balancing in Node.JS.  Meercat is implemented to proof the resear
 
 ## Performance Measurement
 - We have used httperf to measure the performance of our load load balancer by sending a number of requests and measuring the completion time
-- Preliminary results show that measuing CPU and Memory usage on the servers compared to doing simple roundrobin decreases runtime by approximately 34% on average
+- Results show that we get an performance increase of 30% with the M-S model (measurement) and 37% with the PTP model (estimation)
 
 ## License 
 
