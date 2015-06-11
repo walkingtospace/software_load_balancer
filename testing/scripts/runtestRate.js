@@ -15,7 +15,7 @@ if(process.argv.length > 3)
 if(process.argv.length > 4)
 	testIterations = parseInt(process.argv[4]);
 
-var resultStr = "Rate,Avg,Min,Max,Median,Std.Dev.\n";
+var resultStr = "Requsts,Time,Min,Max,Avg,Median,Std.Dev.\n";
 for (i = 1; i <= iterations; i++){
 	var rate = i * increase;
 	var result = new Array(testIterations);
@@ -34,12 +34,13 @@ for (i = 1; i <= iterations; i++){
 	var max = math.max(result);
 	var median = math.median(result); //In case of an even number of values, the average of the two middle values is returned. 
 	var stddev = math.std(result);
+	console.log("Time:\t\t " + time);
 	console.log("Min:\t\t " + min);
 	console.log("Max:\t\t " + max);
 	console.log("Avg:\t\t " + avg);
 	console.log("Median:\t\t " + median);
 	console.log("Std. Dev.:\t " + stddev);
-	resultStr += rate + "," + avg + "," + min + "," + max + "," + median + "," + stddev + "\n";
+	resultStr += rate + "," + time + "," + min + "," + max + "," + avg + "," + median + "," + stddev + "\n";
 }
 
 // Save to file: [expName]results
