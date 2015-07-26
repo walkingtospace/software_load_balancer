@@ -3,6 +3,8 @@
 **Meercat** is a software L7 load balancer for data center to expressively perform request
 routing / load balancing in Node.JS.  Meercat is implemented to proof the research assumption that the overall performance of a network would be improved if a load balancer can distribute traffic upon CPU/Memory resource of hosts.
 
+Final summary : https://docs.google.com/presentation/d/1iqM1cLpoQjwbCZp1OreEnrXDJeklHcd61XKMnXyI-Zw/edit#slide=id.p
+
 ##Usage
 - Clone the master
 - Install node.js V12.xx and express.js
